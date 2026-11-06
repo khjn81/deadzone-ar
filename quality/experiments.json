@@ -51,5 +51,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 2,
+    "observation": "Deferred camera and sensor permissions attach resources even after controller destruction; both new regressions fail.",
+    "hypothesis": "A request generation invalidates late grants and releases only streams owned by stale work.",
+    "change": "Guard camera/sensor continuations with generations; separate cancellable access cleanup from terminal destroy.",
+    "ratings": [
+      3,
+      4,
+      3,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 38,
+    "sourceHash": "525da6b727ba6b4ff35a24bc4f036cb0de16551e68bf2c51639cb12edfa7ce13",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10091
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 39
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 4723,
+        "stats": {
+          "startTime": "2026-11-06T03:57:26.081Z",
+          "duration": 4339.1990000000005,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

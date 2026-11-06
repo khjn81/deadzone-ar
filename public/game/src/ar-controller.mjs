@@ -71,6 +71,8 @@ function accessReason(camera, sensor) {
 export class ARController {
   constructor({ globalObject = globalThis, onStatus = () => {} } = {}) {
     this.globalObject = globalObject;
+    this.accessGeneration = 0;
+    this.destroyed = false;
     this.onStatus = onStatus;
     this.cameraActive = false;
     this.sensorGranted = false;
@@ -105,11 +107,14 @@ export class ARController {
   }
 
   async requestAccess(videoElement) {
+    if (this.destroyed) return { camera: false, sensor: false, mode: 'touch', cancelled: true };
+    const generation = ++this.accessGeneration;
     this.videoElement = videoElement || null;
     const [camera, sensor] = await Promise.all([
-      this.requestCamera(videoElement),
-      this.requestSensor()
+      this.requestCamera(videoElement, generation),
+      this.requestSensor(generation)
     ]);
+    if (!this.accessCurrent(generation)) return { camera: false, sensor: false, mode: 'touch', cancelled: true };
     this.cameraActive = camera;
     this.sensorGranted = sensor || this.sensorGranted;
     this.mode = camera && sensor ? 'ar' : camera || sensor ? 'hybrid' : 'touch';
@@ -121,7 +126,12 @@ export class ARController {
     return result;
   }
 
-  async requestCamera(videoElement) {
+  accessCurrent(generation) {
+    return !this.destroyed && generation === this.accessGeneration;
+  }
+
+  async requestCamera(videoElement, generation = this.accessGeneration) {
+    if (!this.accessCurrent(generation)) return false;
     let getUserMedia;
     let mediaDevices;
     try {
@@ -164,7 +174,7 @@ export class ARController {
       try {
         if (videoElement.srcObject !== retainedStream) videoElement.srcObject = retainedStream;
         await videoElement.play?.();
-        return true;
+        return this.accessCurrent(generation);
       } catch {
         return false;
       }
@@ -190,9 +200,14 @@ export class ARController {
         },
         audio: false
       });
+      if (!this.accessCurrent(generation)) {
+        for (const track of acquiredStream?.getTracks?.() || []) { try { track.stop?.(); } catch {} }
+        return false;
+      }
       this.stream = acquiredStream;
       videoElement.srcObject = acquiredStream;
       await videoElement.play?.();
+      if (!this.accessCurrent(generation)) throw new Error('Cancelled camera request');
       return true;
     } catch (_error) {
       let tracks = [];
@@ -210,7 +225,8 @@ export class ARController {
     }
   }
 
-  async requestSensor() {
+  async requestSensor(generation = this.accessGeneration) {
+    if (!this.accessCurrent(generation)) return false;
     try {
       const OrientationEvent = this.globalObject?.DeviceOrientationEvent;
       if (!OrientationEvent || typeof this.globalObject?.addEventListener !== 'function') return false;
@@ -218,6 +234,7 @@ export class ARController {
         const permission = await OrientationEvent.requestPermission();
         if (permission !== 'granted') return false;
       }
+      if (!this.accessCurrent(generation)) return false;
       if (!this.orientationAttached) {
         this.globalObject.addEventListener('deviceorientation', this.handleOrientation, { passive: true });
         this.orientationAttached = true;
@@ -535,16 +552,26 @@ export class ARController {
     this.pointerGesture = null;
   }
 
-  destroy() {
-    this.detachPointer();
+  cancelAccess() {
+    this.accessGeneration += 1;
     if (this.orientationAttached) {
       this.globalObject?.removeEventListener?.('deviceorientation', this.handleOrientation);
       this.orientationAttached = false;
     }
     const stream = this.stream || this.videoElement?.srcObject;
-    for (const track of stream?.getTracks?.() || []) track.stop?.();
+    for (const track of stream?.getTracks?.() || []) { try { track.stop?.(); } catch {} }
     if (this.videoElement) this.videoElement.srcObject = null;
     this.stream = null;
     this.cameraActive = false;
+    this.sensorGranted = false;
+    this.hasSample = false;
+    this.mode = 'touch';
+  }
+
+  destroy() {
+    if (this.destroyed) return;
+    this.destroyed = true;
+    this.detachPointer();
+    this.cancelAccess();
   }
 }
