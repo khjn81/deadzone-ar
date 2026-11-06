@@ -793,5 +793,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 16,
+    "observation": "After hiding a running camera mission, capture remains live; the new recovery probe fails.",
+    "hypothesis": "Leaving the visible page should release capture and require an explicit reconnect rather than restarting it automatically.",
+    "change": "Cancel pending and active access on hide, skip hidden drawing, and preserve paused training plus explicit camera retry.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 66,
+    "sourceHash": "0d7d6292d8ee7de143f2e518dc7ee08c1fede53bfb4e13d477cab76649c3cb4f",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10321
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 39
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 15036,
+        "stats": {
+          "startTime": "2026-11-06T04:13:34.245Z",
+          "duration": 14651.419000000002,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

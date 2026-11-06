@@ -551,7 +551,7 @@ export function createApp(documentObject, globalObject = globalThis, {
 
   function frame(timestamp) {
     frameId = null;
-    if (destroyed) return;
+    if (destroyed || documentObject.hidden) return;
     let delta = 0;
     if (state.phase === PHASES.PLAYING) {
       delta = lastFrameTime > 0 ? Math.max(0, (timestamp - lastFrameTime) / 1000) : 0;
@@ -627,7 +627,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   async function startWithPermissions() {
-    if (destroyed || elements.start.disabled) return;
+    if (destroyed || documentObject.hidden || elements.start.disabled) return;
     const generation = ++launchGeneration;
     elements.start.disabled = true;
     audioController.syncThreatBuzz?.([], 0);
@@ -720,7 +720,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   async function retryAccess() {
-    if (destroyed || elements.retryAccess.disabled) return;
+    if (destroyed || documentObject.hidden || elements.retryAccess.disabled) return;
     const generation = ++launchGeneration;
     elements.retryAccess.disabled = true;
     try {
@@ -854,7 +854,7 @@ export function createApp(documentObject, globalObject = globalThis, {
 
   function onVisibilityChange() {
     if (!documentObject.hidden) return;
-    if (['intro', 'calibration'].includes(elements.app.dataset.phase)) cancelPreparation();
+    cancelPreparation();
     pauseMission('화면을 벗어나 작전을 일시정지했습니다');
   }
 
