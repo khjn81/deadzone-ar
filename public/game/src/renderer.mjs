@@ -578,6 +578,7 @@ export function createRenderer(canvas, {
         effectSeed: index + 101
       });
     }
+    effectTimestamp = null;
     return true;
   }
 

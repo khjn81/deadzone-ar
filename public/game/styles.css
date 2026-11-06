@@ -1704,3 +1704,13 @@ button:focus-visible {
 .hud-weapon-chip small { font-size: 9px; }
 .aim-mode-option span { font-size: 11px; }
 .aim-mode-option small { font-size: 10px; }
+
+/* Match the camera-mode compositor budget during active touch training. */
+.game-app[data-camera="false"][data-phase="game"] .scene-noise {
+  mix-blend-mode: normal;
+}
+.game-app[data-camera="false"][data-phase="game"] :is(.hud-icon-button, .hud-block, .shield-card, .mode-badge, .ammo-panel, .reload-button) {
+  background: linear-gradient(145deg, rgba(10, 24, 21, 0.96), rgba(4, 13, 11, 0.94));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}

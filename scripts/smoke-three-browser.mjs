@@ -403,6 +403,7 @@ async function inspectMaximumScene(page, viewport, measurePerformance) {
     const qa = globalThis.__DEADZONE__;
     const state = qa.getState();
     const target = state.enemies[0];
+    qa.seedEffectsForQa();
     const maximumDiagnostics = qa.getRendererDiagnostics();
     const projectionViewport = {
       width: document.getElementById('arCanvas').clientWidth,
@@ -722,7 +723,7 @@ async function main() {
   };
   const server = await createStaticServer(serveRoot, requests);
   const origin = `http://127.0.0.1:${server.address().port}`;
-  const qaUrl = `${origin}/game/index.html?training=1&seed=424242&duration=8&diagnostics=1`;
+  const qaUrl = `${origin}/game/index.html?training=1&seed=424242&duration=90&diagnostics=1`;
   const screenshotFlag = process.argv.indexOf('--screenshot-dir');
   const artifactFlag = process.argv.indexOf('--artifact');
   const injectTeardownErrors = process.argv.includes('--inject-teardown-errors');

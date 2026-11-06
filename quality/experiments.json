@@ -1320,5 +1320,62 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 25,
+    "observation": "LatestSwiftShaderCIpassesmobilebudget24.24ms but desktop reports35.35ms and only6of36fragments at its snapshot. TrainingHUDuses9pxbackdropblur; cameraHUDalreadyavoidsit. Corrected max-fixture baseline passes locally with fresh atomic effects and a90s stress mission.",
+    "hypothesis": "Removing live-training blur/blending lowers compositor work; a fresh atomic effect snapshot verifies the complete original maximum workload rather than expired particles.",
+    "change": "Use the existing camera-mode opaque HUD/no-blend treatment during touch training; reset the all-new QAeffect clock, atomically reseed before max diagnostics and keep the stress mission alive while natural8s journeys remain unchanged. Retain every count, resolution and25/50ms limit.",
+    "ratings": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "score": 80,
+    "sourceHash": "0a363f6bce85d51293de3ba2e265a4bbf03bbf53efc6291852c52b92a1f29752",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 5925
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 39
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 19783,
+        "stats": {
+          "startTime": "2026-11-06T05:57:49.205Z",
+          "duration": 19275.171,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "probe": {
+        "exit": 0,
+        "durationMs": 256344
+      }
+    },
+    "decision": "keep"
   }
 ]
