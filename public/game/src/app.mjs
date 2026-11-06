@@ -290,6 +290,7 @@ export function createApp(documentObject, globalObject = globalThis, {
     if (destroyed) return;
     elements.app.dataset.camera = String(access.camera);
     updateMode(arController.getView());
+    redrawInactive();
   } });
   arController.setAimMode(readAimMode(storage));
   const audioController = audioControllerFactory({ globalObject });
@@ -576,7 +577,7 @@ export function createApp(documentObject, globalObject = globalThis, {
       showResult();
       return;
     }
-    if (state.phase === PHASES.PLAYING || state.phase === PHASES.PAUSED) ensureFrame();
+    if (state.phase === PHASES.PLAYING) ensureFrame();
   }
 
   function beginMission() {
@@ -834,6 +835,13 @@ export function createApp(documentObject, globalObject = globalThis, {
     pauseMission('화면을 벗어나 작전을 일시정지했습니다');
   }
 
+  function redrawInactive() {
+    if (destroyed || documentObject.hidden || state.phase === PHASES.PLAYING) return;
+    const view = arController.getView();
+    renderInfo = renderer.render(state, view, finiteNumber(globalObject?.performance?.now?.()));
+    updateHud(view);
+  }
+
   function onOrientationChange() {
     pauseMission('화면 방향이 바뀌어 조준 재설정이 필요합니다');
   }
@@ -987,6 +995,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   listen(elements.sound, 'click', toggleSound);
   listen(documentObject, 'keydown', onKeyDown);
   listen(documentObject, 'visibilitychange', onVisibilityChange);
+  listen(globalObject, 'resize', redrawInactive, { passive: true });
   listen(globalObject, 'orientationchange', onOrientationChange, { passive: true });
   listen(globalObject, 'pagehide', (event) => {
     if (!event.persisted) { destroy(); return; }

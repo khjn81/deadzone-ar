@@ -634,5 +634,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 13,
+    "observation": "The new browser counter shows GPU renderCount continues increasing while a mission is paused.",
+    "hypothesis": "Cancelling the frame loop during pause eliminates idle drawing while explicit events redraw as needed.",
+    "change": "Finish at most one final pause frame to preserve threat-audio cleanup, then stop recurrent RAF; redraw inactive views only on visible resize or camera-status changes.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 63,
+    "sourceHash": "f37e499039f2a8cb5a3fa99ffb6e6d52e3c3429c0f4345d73081dd1cc37e59f2",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10139
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 38
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 11112,
+        "stats": {
+          "startTime": "2026-11-06T04:09:26.327Z",
+          "duration": 10729.439,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]
