@@ -24,6 +24,6 @@ Setup is excluded. Scores are implementation-agent rubric judgments out of100. B
 | 18 | Add deterministic shell hashing and a prebuild consistency gate; replace the old literal-version assertion with an exact content-derived assertion. | 69 |
 | 19 | Add14 asset checks, byte-identical Three.js regeneration and an isolated lockfile install/build/full-test verification; independently verify original model downloads and1195 npm package files. | 71 |
 | 20 | Add honest setup/controls/limits, MIT and third-party notices, pinned CI,42 development E2E cases,5 production holdouts and the original strict native graphics smoke. | 80 |
-| 21 | Isolate the injected pagehide errors on an owned loaded app, preserve both error assertions and all normal stress checks, prefer pinned Chromium, and use the verified Ubuntu mirror in every CI job. | 80 |
+| 21 | Keep the isolated negative path but wait for loaded models and a verified3D frame before injecting pagehide errors. Preserve original30s/both-error assertions, strict per-request abort proof and all positive stress/performance checks; pin Chromium and use the upstream package mirror. | 80 |
 
 The round10 touch fixture was corrected and re-run against the original source, which still failed. Round13 preserved the final pause-frame audio contract before stopping continuous rendering. Round21 keeps the original30second negative-test deadline, both teardown-error assertions, and every positive graphics workload/threshold. No browser retries were added.

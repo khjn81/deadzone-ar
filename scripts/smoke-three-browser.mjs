@@ -736,9 +736,15 @@ async function main() {
       await installBrowserGuards(context);
       const page = await context.newPage();
       const pageWatch = watchPage(page, 'teardown-probe', failures);
-      await page.goto(qaUrl, { waitUntil: 'networkidle' });
-      await page.waitForFunction(() => typeof globalThis.__DEADZONE__?.getState === 'function');
-      process.stderr.write('[teardown probe] application loaded; exercising pagehide\n');
+      await waitForQaApp(page, qaUrl);
+      const worldSeeded = await page.evaluate(() => globalThis.__DEADZONE__.seedMaximumWorldForQa());
+      assert.equal(worldSeeded, true);
+      await page.waitForFunction(() => {
+        const layer = globalThis.__DEADZONE__?.getRendererDiagnostics?.().layer;
+        return layer?.modelReady === true && layer.renderCount > 0
+          && layer.programCount > 0 && layer.shaderErrorCount === 0;
+      }, null, { timeout: 8_000 });
+      process.stderr.write('[teardown probe] loaded models rendered; exercising pagehide\n');
       await page.evaluate(() => {
         addEventListener('pagehide', () => {
           console.error('intentional teardown console error');

@@ -1069,9 +1069,9 @@
   },
   {
     "round": 21,
-    "observation": "Public Linux production CI fails the negative teardown probe after30s before its required error output; that probe unnecessarily executes the full graphics workload first. Desktop setup also uses the same slow package mirror.",
+    "observation": "Public Linux production CI fails the negative teardown probe after30s before its required error output; that probe unnecessarily executes the full graphics workload first. Desktop setup also uses the same slow package mirror. CI at46da094 exposed an early-probe fixture error: intro has no compiled3D program, so loaded-model abort proof is not yet available.",
     "hypothesis": "A dedicated real-application teardown-error path and one pinned browser make failure detection reproducible without weakening its30s bound or positive graphics coverage.",
-    "change": "Isolate the injected pagehide errors on an owned loaded app, preserve both error assertions and all normal stress checks, prefer pinned Chromium, and use the verified Ubuntu mirror in every CI job.",
+    "change": "Keep the isolated negative path but wait for loaded models and a verified3D frame before injecting pagehide errors. Preserve original30s/both-error assertions, strict per-request abort proof and all positive stress/performance checks; pin Chromium and use the upstream package mirror.",
     "ratings": [
       4,
       4,
@@ -1095,22 +1095,22 @@
       4
     ],
     "score": 80,
-    "sourceHash": "ccdaf15d9180f4d562c87adc59c4e04586eb6e506d7a1367807659ca94cabf8a",
+    "sourceHash": "b0e2f9dd0eaeb83c1cde18584d1cb01e4a5bbb269a2f0de6c3541da464d4488f",
     "measurements": {
       "unit": {
         "exit": 0,
-        "durationMs": 3175
+        "durationMs": 5648
       },
       "syntax": {
         "exit": 0,
-        "durationMs": 43
+        "durationMs": 39
       },
       "e2e": {
         "exit": 0,
-        "durationMs": 4796,
+        "durationMs": 4762,
         "stats": {
-          "startTime": "2026-11-06T04:46:37.894Z",
-          "duration": 4401.852,
+          "startTime": "2026-11-06T04:51:20.516Z",
+          "duration": 4378.825000000001,
           "expected": 2,
           "skipped": 0,
           "unexpected": 0,
@@ -1119,9 +1119,19 @@
       },
       "probe": {
         "exit": 0,
-        "durationMs": 11251
+        "durationMs": 11683
       }
     },
-    "decision": "keep"
+    "decision": "keep",
+    "integrationRetests": [
+      {
+        "run": 42163847686,
+        "result": "negative probe failed before required teardown-error evidence"
+      },
+      {
+        "run": 42164623109,
+        "result": "isolated probe lacked rendered-model proof before classifying request aborts; corrected by awaiting loaded3Dframe"
+      }
+    ]
   }
 ]
