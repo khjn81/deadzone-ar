@@ -581,5 +581,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 12,
+    "observation": "At100ms drawing intervals, the baseline advances only0.45s per1.1s because every frame is capped at50ms.",
+    "hypothesis": "Bounded simulation substeps preserve elapsed mission time without taking unstable large physics steps.",
+    "change": "Consume visible frame gaps in at-most1/60s simulation steps; explicitly pause stalls longer than2s.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      4,
+      4,
+      4,
+      4,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 61,
+    "sourceHash": "b113a4f7d90e767c26830b9b053c38c0fd0fd7416e4b7b65b584417fc5d2834c",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10000
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 36
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 22133,
+        "stats": {
+          "startTime": "2026-11-06T04:07:10.951Z",
+          "duration": 21753.713,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

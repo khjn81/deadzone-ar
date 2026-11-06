@@ -550,12 +550,22 @@ export function createApp(documentObject, globalObject = globalThis, {
     if (destroyed) return;
     let delta = 0;
     if (state.phase === PHASES.PLAYING) {
-      delta = lastFrameTime > 0 ? clamp((timestamp - lastFrameTime) / 1000, 0, 0.05) : 0;
+      delta = lastFrameTime > 0 ? Math.max(0, (timestamp - lastFrameTime) / 1000) : 0;
       lastFrameTime = timestamp;
-      arController.update(delta);
+      if (delta > 2) {
+        pauseMission('화면 갱신이 지연되어 작전을 일시정지했습니다');
+        return;
+      }
+      let remaining = delta;
+      while (remaining > 1e-9 && state.phase === PHASES.PLAYING) {
+        const step = Math.min(remaining, 1 / 60);
+        arController.update(step);
+        state = updateGame(state, arController.getView(), step);
+        processEvents();
+        remaining -= step;
+      }
     }
     const view = arController.getView();
-    if (state.phase === PHASES.PLAYING) state = updateGame(state, view, delta);
     if (state.phase === PHASES.PLAYING) audioController.syncThreatBuzz?.(state.enemies, view.yaw);
     else audioController.syncThreatBuzz?.([], 0);
     renderInfo = renderer.render(state, view, timestamp);
