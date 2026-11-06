@@ -1,0 +1,10 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" data-theme="swarm">
+  <title>DEADZONE: SWARM</title>
+  <rect width="24" height="24" rx="5" fill="#050A08"/>
+  <path d="M3.5 7V3.5H7M17 3.5H20.5V7M20.5 17V20.5H17M7 20.5H3.5V17" stroke="#B9FF38" stroke-width="1.25" stroke-linecap="round"/>
+  <path d="M10.2 9.4C8 6.9 5.8 6.7 5.3 8.1C4.9 9.4 7.4 11 10.1 11.2M13.8 9.4C16 6.9 18.2 6.7 18.7 8.1C19.1 9.4 16.6 11 13.9 11.2M10.1 12.8C7.7 13.1 6.2 14.7 6.8 15.9C7.5 17.1 9.1 16.1 10.5 14.5M13.9 12.8C16.3 13.1 17.8 14.7 17.2 15.9C16.5 17.1 14.9 16.1 13.5 14.5" fill="#B9FF38" fill-opacity="0.22" stroke="#B9FF38" stroke-width="0.75" stroke-linejoin="round"/>
+  <ellipse cx="12" cy="12.1" rx="2.35" ry="4.15" fill="#20291C" stroke="#B9FF38" stroke-width="0.9"/>
+  <path d="M10.2 10.6H13.8M10 12.5H14M10.6 14.4H13.4M11.1 7.9L10.2 6.5M12.9 7.9L13.8 6.5M9.8 11.2L7.8 10.3M14.2 11.2L16.2 10.3M9.8 13.1L7.7 14.2M14.2 13.1L16.3 14.2" stroke="#B9FF38" stroke-width="0.7" stroke-linecap="round"/>
+  <circle cx="11.25" cy="9.35" r="0.5" fill="#FF5A2D"/>
+  <circle cx="12.75" cy="9.35" r="0.5" fill="#FF5A2D"/>
+</svg>

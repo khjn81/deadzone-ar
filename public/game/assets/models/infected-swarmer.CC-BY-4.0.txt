@@ -1,0 +1,7 @@
+Title: Real-time Refraction Demo: Mosquito in Amber — mosquito mesh (infected-swarmer derivative)
+Author: Loïc Norgeot (model); Geoffrey Marchal (mosquito scan); Sketchfab (real-time refraction sample)
+Source URL: https://sketchfab.com/3d-models/real-time-refraction-demo-mosquito-in-amber-37233d6ed84844fea1ebe88069ea58d1
+License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+Original SHA-256: 1c0b49000650e8a8c00d69bc8d64e46d33527871a47d74e4f2278887325cc35f
+Derived SHA-256: ccda1802038a0399b2c9cc835fa313e5b710455f484d3d44da7e57833b177d4b
+Changes: Fallback approved after the three prescribed candidates failed their gates; used the official Khronos glTF-Sample-Assets MosquitoInAmber model page https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/MosquitoInAmber and direct GLB https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/MosquitoInAmber/glTF-Binary/MosquitoInAmber.glb; conversion extracted only the mosquito into a self-contained GLB; mesh optimization pruned, deduplicated, welded, and meshoptimizer-reordered data; texture resizing reduced the base-color and normal maps from 2048x2048 to 1024x1024; axis normalization rotates +X forward to +Z and centers the bounds at the origin; source wings are not hidden because they are fused into the mesh and are reserved for runtime replacement or overlay; embedded license metadata was normalized to the canonical HTTPS CC BY 4.0 URI.

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#07100f" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="DEADZONE: SWARM" />
+    <meta name="application-name" content="DEADZONE: SWARM" />
+    <meta name="description" content="후면 카메라와 휴대폰 움직임으로 감염 곤충을 추적·제거하는 90초 모바일 AR 게임" />
+    <meta property="og:title" content="DEADZONE: SWARM — 모바일 AR 감염 군체 제거" />
+    <meta property="og:description" content="후면 카메라로 감염 군체를 추적하고 제거하는 90초 AR 생존 작전" />
+    <meta property="og:image" content="/og.png" />
+    <meta property="og:type" content="website" />
+    <title>DEADZONE: SWARM — 모바일 AR 감염 군체 제거</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="gameApp" class="game-app" data-camera="false" data-phase="intro">
+      <div id="sceneLayer" class="scene-layer">
+        <video id="cameraFeed" class="camera-feed" autoplay muted playsinline aria-hidden="true"></video>
+        <div class="training-world" aria-hidden="true">
+          <div class="training-sky"></div>
+          <div class="training-moon"></div>
+          <div class="city city-far"></div>
+          <div class="city city-near"></div>
+          <div class="training-road"></div>
+          <div class="road-stripe stripe-one"></div>
+          <div class="road-stripe stripe-two"></div>
+          <div class="road-stripe stripe-three"></div>
+        </div>
+        <canvas id="worldCanvas" class="world-canvas" width="390" height="844" aria-hidden="true"></canvas>
+        <canvas id="arCanvas" class="ar-canvas" width="390" height="844" aria-label="카메라 화면 속 감염 곤충을 조준하는 전투 화면"></canvas>
+        <div class="scene-noise" aria-hidden="true"></div>
+        <div class="scene-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      </div>
+
+      <section id="introScreen" class="screen intro-screen" aria-labelledby="introTitle">
+        <header class="brand-lockup">
+          <span class="brand-sigil" aria-hidden="true"><i></i></span>
+          <span><b>DEADZONE: SWARM</b><small>INFESTATION RESPONSE UNIT</small></span>
+          <span class="connection-status"><i></i> STANDBY</span>
+        </header>
+
+        <div class="intro-spacer"></div>
+
+        <article class="mission-card">
+          <div class="mission-kicker"><span>OPERATION 01</span><span>SEOUL / K-17</span></div>
+          <p id="capabilityStatus" class="system-status" role="status"><i aria-hidden="true"></i> 기기 기능 확인 중</p>
+          <h1 id="introTitle">DEAD<span>ZONE</span><br /><em>SWARM</em></h1>
+          <p class="mission-copy">후면 카메라 너머의 감염 군체를 찾아 제거하세요. 휴대폰이 조준경이 됩니다.</p>
+
+          <div class="radar-brief" aria-hidden="true">
+            <div class="radar-disc"><i></i><b></b><span></span></div>
+            <div class="radar-data"><span>THREAT</span><strong>LEVEL 04</strong><small>3 SIGNALS DETECTED</small></div>
+          </div>
+
+          <ol class="briefing-steps" aria-label="게임 조작법">
+            <li><span>01</span><i class="step-phone" aria-hidden="true"></i><div><b>폰을 세워라</b><small>주변을 볼 수 있게 잡기</small></div></li>
+            <li><span>02</span><i class="step-scan" aria-hidden="true"></i><div><b>주변을 둘러봐라</b><small>후면 카메라로 목표 방향 비추기</small></div></li>
+            <li><span>03</span><i class="step-target" aria-hidden="true"></i><div><b>탭해서 제거하라</b><small>중앙 조준점에 맞춰 사격</small></div></li>
+          </ol>
+
+          <div class="aim-mode-selector" role="group" aria-label="조준 방식 선택">
+            <button id="cameraAimButton" class="aim-mode-option" type="button" aria-pressed="false">
+              <span>카메라 조준</span><small>실제 방향을 따라감</small>
+            </button>
+            <button id="seatedTurnButton" class="aim-mode-option" type="button" aria-pressed="true">
+              <span>앉은 자세 회전</span><small>기울이면 그 방향으로 회전</small>
+            </button>
+          </div>
+
+          <div class="intro-weapon-picker" role="group" aria-label="시작 무기 선택">
+            <div class="picker-heading"><span>LOADOUT</span><small>작전 중에도 교체 가능</small></div>
+            <div class="weapon-choice-grid">
+              <button id="weapon-sidearm" class="weapon-choice" type="button" aria-pressed="false"><b>SIDEARM</b><small>정밀 단발</small></button>
+              <button id="weapon-burst" class="weapon-choice" type="button" aria-pressed="true"><b>BURST SMG</b><small>안정 3점사</small></button>
+              <button id="weapon-scatter" class="weapon-choice" type="button" aria-pressed="false"><b>SCATTER</b><small>넓은 산탄</small></button>
+              <button id="weapon-rail" class="weapon-choice" type="button" aria-pressed="false"><b>RAIL</b><small>고위력 관통</small></button>
+              <button id="weapon-cryo" class="weapon-choice" type="button" aria-pressed="false"><b>CRYO</b><small>적 감속 제어</small></button>
+            </div>
+          </div>
+
+          <button id="startButton" class="primary-action" type="button">
+            <span><small>CAMERA + MOTION</small><b>작전 시작</b></span>
+            <i aria-hidden="true">›</i>
+          </button>
+          <button id="trainingButton" class="secondary-action" type="button">권한 없이 훈련 모드로 시작</button>
+        </article>
+
+        <footer class="privacy-brief">
+          <p><i class="privacy-lock" aria-hidden="true"></i> 카메라 영상은 저장하거나 전송하지 않습니다.</p>
+          <p class="safety-copy">주변을 확인하고 걸으면서 플레이하지 마세요.</p>
+        </footer>
+      </section>
+
+      <section id="calibrationScreen" class="screen calibration-screen" aria-labelledby="calibrationTitle" hidden>
+        <header class="minimal-brand"><span class="brand-sigil mini" aria-hidden="true"><i></i></span><b>DEADZONE: SWARM</b></header>
+        <div class="calibration-target" aria-hidden="true">
+          <div class="calibration-ring ring-a"></div>
+          <div class="calibration-ring ring-b"></div>
+          <div class="calibration-axis horizontal"></div>
+          <div class="calibration-axis vertical"></div>
+          <span id="calibrationCount">3</span>
+        </div>
+        <div class="calibration-copy">
+          <p class="eyebrow">ORIENTATION SYNC</p>
+          <h2 id="calibrationTitle">정면을 향해<br />폰을 고정하세요</h2>
+          <p>현재 방향과 기울기를 조준 원점으로 설정합니다.</p>
+        </div>
+        <div class="calibration-progress" aria-hidden="true"><i></i><i></i><i></i></div>
+      </section>
+
+      <section id="gameHud" class="game-hud" aria-label="전투 정보" hidden>
+        <header class="hud-top">
+          <button id="pauseButton" class="hud-icon-button" type="button" aria-label="게임 일시정지"><i></i><i></i></button>
+          <div class="hud-block wave-block"><span>WAVE</span><strong id="waveValue">01 / 03</strong></div>
+          <div class="hud-block timer-block"><span>TIME</span><strong id="timeValue">01:30</strong></div>
+          <div class="hud-block score-block"><span>SCORE</span><strong id="scoreValue">000000</strong></div>
+        </header>
+
+        <div class="hud-status-row">
+          <div class="shield-card">
+            <div class="shield-label"><span><i aria-hidden="true"></i> SHIELD</span><strong><b id="shieldValue">100</b>%</strong></div>
+            <div class="shield-meter" role="progressbar" aria-label="방어막" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+              <i id="shieldFill"></i>
+            </div>
+          </div>
+          <div id="modeBadge" class="mode-badge"><i></i><span>AR SENSOR</span></div>
+        </div>
+
+        <div id="comboPanel" class="combo-panel" hidden><span>CHAIN</span><strong>×<b id="comboValue">0</b></strong></div>
+        <div id="lockLabel" class="lock-label" aria-hidden="true">SEARCHING</div>
+        <p id="feedbackText" class="combat-feedback" aria-live="polite"></p>
+
+        <div class="turn-controls" aria-label="수동 회전">
+          <button id="turnLeftButton" class="turn-button" type="button" aria-label="왼쪽으로 회전"><span>◀</span><small>HOLD</small></button>
+          <button id="turnRightButton" class="turn-button" type="button" aria-label="오른쪽으로 회전"><span>▶</span><small>HOLD</small></button>
+        </div>
+
+        <div id="weaponDeck" class="weapon-deck" data-weapon="burst">
+          <div class="weapon-strip" role="group" aria-label="전투 무기 선택">
+            <button id="hud-weapon-sidearm" class="hud-weapon-chip" type="button" aria-pressed="false"><b>SIDEARM</b><small>9MM</small></button>
+            <button id="hud-weapon-burst" class="hud-weapon-chip" type="button" aria-pressed="true"><b>BURST</b><small>5.56</small></button>
+            <button id="hud-weapon-scatter" class="hud-weapon-chip" type="button" aria-pressed="false"><b>SCATTER</b><small>12G</small></button>
+            <button id="hud-weapon-rail" class="hud-weapon-chip" type="button" aria-pressed="false"><b>RAIL</b><small>HV</small></button>
+            <button id="hud-weapon-cryo" class="hud-weapon-chip" type="button" aria-pressed="false"><b>CRYO</b><small>FROST</small></button>
+          </div>
+          <div class="ammo-panel">
+            <span class="ammo-label"><b id="weaponName">BURST SMG</b> / <b id="weaponSubtitle">5.56 · 안정적인 3점사</b></span>
+            <div class="ammo-count"><strong id="ammoValue">24</strong><small>/ <b id="ammoMaxValue">24</b></small></div>
+            <div id="bulletRack" class="bullet-rack" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+          <button id="reloadButton" class="reload-button" type="button"><i aria-hidden="true"></i><span>RELOAD</span></button>
+          <button id="fireButton" class="fire-button" type="button" aria-label="사격">
+            <i class="fire-ring" aria-hidden="true"></i><span>FIRE</span><small>TAP ANYWHERE</small>
+          </button>
+        </div>
+      </section>
+
+      <section id="pauseScreen" class="modal-screen pause-screen" role="dialog" aria-modal="true" aria-labelledby="pauseTitle" hidden>
+        <div class="modal-card pause-card">
+          <p class="eyebrow">TACTICAL HOLD</p>
+          <div class="pause-icon" aria-hidden="true"><i></i><i></i></div>
+          <h2 id="pauseTitle">작전 일시정지</h2>
+          <p>주변을 확인한 뒤 안전할 때 다시 시작하세요.</p>
+          <button id="resumeButton" class="primary-action compact" type="button"><span><small>RETURN TO FIELD</small><b>전투 계속</b></span><i aria-hidden="true">›</i></button>
+          <button id="recalibrateButton" class="secondary-action" type="button">현재 방향으로 조준 재설정</button>
+          <button id="retryAccessButton" class="secondary-action" type="button">카메라·센서 다시 연결</button>
+          <p class="model-credit">3D insect sources: <a href="https://sketchfab.com/3d-models/real-time-refraction-demo-mosquito-in-amber-37233d6ed84844fea1ebe88069ea58d1" target="_blank" rel="noopener noreferrer">Mosquito (swarmer)</a> by Loïc Norgeot, Geoffrey Marchal, and Sketchfab · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>; <a href="https://poly.pizza/m/GcttdvsqsQ" target="_blank" rel="noopener noreferrer">Armabee Evolved (stinger)</a>, <a href="https://poly.pizza/m/3tCnJC9UYA" target="_blank" rel="noopener noreferrer">Ladybird (bulwark)</a>, and <a href="https://poly.pizza/m/6HsU6GQt3a" target="_blank" rel="noopener noreferrer">Bee Enemy (queen)</a> by Quaternius / Exceptional_3D · Poly Pizza <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0 Universal</a>.</p>
+        </div>
+      </section>
+
+      <section id="resultScreen" class="screen result-screen" aria-labelledby="resultTitle" hidden>
+        <header class="minimal-brand"><span class="brand-sigil mini" aria-hidden="true"><i></i></span><b>AFTER ACTION REPORT</b></header>
+        <div class="result-spacer"></div>
+        <article class="result-card">
+          <p class="eyebrow">MISSION RATING</p>
+          <div id="resultGrade" class="result-grade">A</div>
+          <h2 id="resultTitle">감염 군체 제거 완료</h2>
+          <p id="resultDescription" class="result-description">생존했습니다. 다음 투입에서는 더 긴 제거 연쇄를 노려보세요.</p>
+
+          <div class="result-score-row"><span>FINAL SCORE</span><strong id="resultScore">0</strong></div>
+          <dl class="result-grid">
+            <div><dt>제거</dt><dd><b id="resultKills">0</b><small>KILLS</small></dd></div>
+            <div><dt>명중률</dt><dd><b id="resultAccuracy">0%</b><small>ACCURACY</small></dd></div>
+            <div><dt>치명타</dt><dd><b id="resultCriticalHits">0</b><small>CRITICAL HITS</small></dd></div>
+            <div><dt>최고 연쇄</dt><dd><b>×<span id="resultCombo">0</span></b><small>MAX CHAIN</small></dd></div>
+          </dl>
+          <div class="best-record"><span>PERSONAL BEST</span><strong id="bestScore">0</strong></div>
+          <button id="shareResultButton" class="secondary-action share-action" type="button">결과 공유</button>
+          <button id="replayButton" class="primary-action" type="button"><span><small>REDEPLOY</small><b>다시 투입</b></span><i aria-hidden="true">↻</i></button>
+          <button id="resultRecalibrateButton" class="secondary-action" type="button">조준 재설정 후 다시 시작</button>
+          <p class="model-credit">3D insect sources: <a href="https://sketchfab.com/3d-models/real-time-refraction-demo-mosquito-in-amber-37233d6ed84844fea1ebe88069ea58d1" target="_blank" rel="noopener noreferrer">Mosquito (swarmer)</a> by Loïc Norgeot, Geoffrey Marchal, and Sketchfab · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>; <a href="https://poly.pizza/m/GcttdvsqsQ" target="_blank" rel="noopener noreferrer">Armabee Evolved (stinger)</a>, <a href="https://poly.pizza/m/3tCnJC9UYA" target="_blank" rel="noopener noreferrer">Ladybird (bulwark)</a>, and <a href="https://poly.pizza/m/6HsU6GQt3a" target="_blank" rel="noopener noreferrer">Bee Enemy (queen)</a> by Quaternius / Exceptional_3D · Poly Pizza <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0 Universal</a>.</p>
+        </article>
+      </section>
+
+      <button id="soundButton" class="sound-button" type="button" aria-label="음향 끄기" aria-pressed="true"><span aria-hidden="true">)))</span></button>
+      <div id="permissionToast" class="permission-toast" role="status" aria-live="polite" hidden></div>
+      <div class="landscape-warning" role="status"><span aria-hidden="true">↻</span><b>세로로 돌려주세요</b><small>DEADZONE: SWARM은 세로 화면에 최적화되어 있습니다.</small></div>
+
+      <noscript><p class="noscript-note">이 게임을 플레이하려면 브라우저에서 JavaScript를 켜주세요.</p></noscript>
+    </main>
+    <script type="module" src="./src/app.mjs"></script>
+  </body>
+</html>

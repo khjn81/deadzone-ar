@@ -1,0 +1,7 @@
+Title: Bee Enemy — infected queen derivative
+Author: Quaternius
+Source URL: https://poly.pizza/m/6HsU6GQt3a
+License: CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/)
+Original SHA-256: 29a3ac29e6859208bdab9db3d34387e1d154f14564bd17cdc57eda669cb557cf
+Derived SHA-256: 29a3ac29e6859208bdab9db3d34387e1d154f14564bd17cdc57eda669cb557cf
+Changes: Downloaded the source GLB without binary edits; runtime applies infection materials, scale, animation, and weak-point overlays. Source download URL: https://static.poly.pizza/19203489-125b-41f5-b9c9-801a522cb775.glb

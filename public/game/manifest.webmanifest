@@ -1,0 +1,26 @@
+{
+  "name": "DEADZONE: SWARM",
+  "short_name": "DEADZONE",
+  "description": "후면 카메라로 감염 군체를 추적하고 제거하는 모바일 AR 게임",
+  "id": "/game/",
+  "start_url": "/game/index.html",
+  "scope": "/game/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050a08",
+  "theme_color": "#07100f",
+  "icons": [
+    {
+      "src": "/game/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/game/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

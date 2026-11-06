@@ -1,0 +1,7 @@
+Title: Armabee Evolved — infected stinger derivative
+Author: Quaternius
+Source URL: https://poly.pizza/m/GcttdvsqsQ
+License: CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/)
+Original SHA-256: 61a48cfba610e46abba0c98f5371d331f60ed087a55a335580cbf27ba4b3d190
+Derived SHA-256: 61a48cfba610e46abba0c98f5371d331f60ed087a55a335580cbf27ba4b3d190
+Changes: Downloaded the source GLB without binary edits; runtime applies infection materials, scale, animation, and weak-point overlays. Source download URL: https://static.poly.pizza/fb7d7a9e-5584-4e0b-a1bf-251fc9946696.glb

@@ -1,0 +1,114 @@
+{
+  "version": "rubric-v1",
+  "scale": {
+    "0": "absent or failing",
+    "1": "implementation clues with observed critical failure",
+    "2": "partial implementation with known gaps",
+    "3": "representative path executed",
+    "4": "edge cases and recovery executed",
+    "5": "repeated independent reproduction and public evidence"
+  },
+  "criteria": [
+    {
+      "id": "mission",
+      "requirement": "Complete a real firing/reload/pause/result/replay journey",
+      "max": 5
+    },
+    {
+      "id": "storage",
+      "requirement": "Storage denial never blocks a visit",
+      "max": 5
+    },
+    {
+      "id": "permission-owner",
+      "requirement": "Superseded and destroyed camera/sensor requests release their resources",
+      "max": 5
+    },
+    {
+      "id": "startup",
+      "requirement": "Startup and retry actions settle without reviving cancelled work",
+      "max": 5
+    },
+    {
+      "id": "camera-life",
+      "requirement": "Ended or failed camera streams leave a usable training mode",
+      "max": 5
+    },
+    {
+      "id": "visibility",
+      "requirement": "Hidden calibration and gameplay remain stopped",
+      "max": 5
+    },
+    {
+      "id": "dialog",
+      "requirement": "Pause isolates controls and manages focus",
+      "max": 5
+    },
+    {
+      "id": "keyboard",
+      "requirement": "Native keyboard actions and emergency pause work",
+      "max": 5
+    },
+    {
+      "id": "pointer",
+      "requirement": "Concurrent turn gestures have explicit ownership",
+      "max": 5
+    },
+    {
+      "id": "page-cache",
+      "requirement": "Back-forward cache restores a paused, resumable app",
+      "max": 5
+    },
+    {
+      "id": "elapsed",
+      "requirement": "Low drawing cadence preserves elapsed mission time",
+      "max": 5
+    },
+    {
+      "id": "idle",
+      "requirement": "Inactive scenes stop continuous drawing",
+      "max": 5
+    },
+    {
+      "id": "sensor",
+      "requirement": "Malformed, reordered and stale orientation observations cannot steer",
+      "max": 5
+    },
+    {
+      "id": "touch",
+      "requirement": "Compact touch controls and browser zoom remain usable",
+      "max": 5
+    },
+    {
+      "id": "graphics",
+      "requirement": "Native graphics loss has a usable fallback",
+      "max": 5
+    },
+    {
+      "id": "offline",
+      "requirement": "Offline cache is namespaced and versioned against actual files",
+      "max": 5
+    },
+    {
+      "id": "assets",
+      "requirement": "Local runtime and model assets have verified integrity/provenance",
+      "max": 5
+    },
+    {
+      "id": "publication",
+      "requirement": "Accurate public guide, screenshots, own license and attribution",
+      "max": 5
+    },
+    {
+      "id": "install",
+      "requirement": "Fresh tracked-source lockfile install builds and checks",
+      "max": 5
+    },
+    {
+      "id": "e2e",
+      "requirement": "Repeatable desktop, touch and cross-engine end-to-end journeys",
+      "max": 5
+    }
+  ],
+  "limitations": "Implementation-agent judgments, not independent human ratings or physical camera/motion-device validation."
+}

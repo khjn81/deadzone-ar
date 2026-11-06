@@ -1,0 +1,7 @@
+Title: Ladybird — infected bulwark derivative
+Author: Exceptional_3D
+Source URL: https://poly.pizza/m/3tCnJC9UYA
+License: CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/)
+Original SHA-256: 718b2be1cd6c1b4361e9e4cb7610459b994575d9e3e7b7818348670f53612166
+Derived SHA-256: 718b2be1cd6c1b4361e9e4cb7610459b994575d9e3e7b7818348670f53612166
+Changes: Downloaded the source GLB without binary edits; runtime applies infection materials, scale, animation, and weak-point overlays. Source download URL: https://static.poly.pizza/8e228e46-8838-4362-80ef-297b8d281966.glb
