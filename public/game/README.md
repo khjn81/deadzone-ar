@@ -107,3 +107,5 @@ The ambient color-grade gradients use one owned full-resolution2Dcanvas cache, r
 Active touch training uses the same opaque HUD and normal noise blending as camera play, avoiding live backdrop blur over the animated3Dworld. The maximum-scene smoke uses a90second active window and freshly seeded effects for its initial snapshot; its6live/4corpse/20casing/8impact/36fragment assertions and25/50ms frame budgets are unchanged. UI completion tests separately use natural8second missions.
 
 Casing and fragment pools use fixed20/36instance buffers and two InstancedMesh batches. Geometry, material, per-instance position/rotation/scale and visible counts are retained; impact marks/flashes keep independent opacity materials. Buffers are reused, reset by draw count and disposed on teardown or partial construction failure. Diagnostic mode also reports actual draw calls and triangles.
+
+Locked reticles reuse a128CSSpx full-DPR sprite containing the original strokes and blur. Recoil still moves the sprite every frame; animated unlocked reticles use direct drawing. The sprite is rebuilt on DPR changes and releases its backing storage on renderer destruction.

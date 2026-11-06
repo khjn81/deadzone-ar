@@ -399,6 +399,9 @@ export function createRenderer(canvas, {
   let gradeSize = '';
   let gradeTimestamp = -Infinity;
   let gradeUnavailable = false;
+  let reticleCanvas = null;
+  let reticleRatio = 0;
+  let reticleUnavailable = false;
   const effects = combatEffectsFactory();
   const AbortControllerClass = globalObject?.AbortController || globalThis.AbortController;
   const worldLayerController = typeof AbortControllerClass === 'function'
@@ -448,6 +451,39 @@ export function createRenderer(canvas, {
       }
     }
     drawCameraGrade(ctx, width, height, now, reducedMotion);
+  }
+
+  function releaseReticleCache() {
+    if (reticleCanvas) {
+      try { reticleCanvas.width = 0; reticleCanvas.height = 0; } catch {}
+    }
+    reticleCanvas = null;
+    reticleRatio = 0;
+  }
+
+  function drawMissionReticle(locked, recoil, now) {
+    if (locked && !reticleUnavailable) {
+      try {
+        if (!reticleCanvas || reticleRatio !== pixelRatio) {
+          releaseReticleCache();
+          reticleCanvas = canvas.ownerDocument?.createElement?.('canvas') || null;
+          const spriteContext = reticleCanvas?.getContext?.('2d');
+          if (!spriteContext) throw new Error('Reticle cache unavailable');
+          reticleCanvas.width = Math.ceil(128 * pixelRatio);
+          reticleCanvas.height = Math.ceil(128 * pixelRatio);
+          spriteContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+          drawReticle(spriteContext, 128, 128, true, 0, 0, reducedMotion);
+          reticleRatio = pixelRatio;
+        }
+        const recoilOffset = clamp(finiteNumber(recoil), 0, 1) * (reducedMotion ? 0 : 8);
+        ctx.drawImage(reticleCanvas, width / 2 - 64, height / 2 - recoilOffset - 64, 128, 128);
+        return;
+      } catch {
+        releaseReticleCache();
+        reticleUnavailable = true;
+      }
+    }
+    drawReticle(ctx, width, height, locked, recoil, now, reducedMotion);
   }
 
   function disposeEnemyLayer(layer) {
@@ -689,7 +725,7 @@ export function createRenderer(canvas, {
     drawParticles(ctx, particles, delta);
     locked.sort((left, right) => left.distance - right.distance);
     const lockedEnemyId = locked[0]?.id ?? null;
-    drawReticle(ctx, width, height, lockedEnemyId !== null, state.weapon?.recoil, now, reducedMotion);
+    drawMissionReticle(lockedEnemyId !== null, state.weapon?.recoil, now);
     drawScanOverlay(ctx, width, height, now, reducedMotion);
     drawDamageVignette(ctx, width, height, state.shield, damagePulse);
     ctx.restore();
@@ -724,6 +760,8 @@ export function createRenderer(canvas, {
     destroyed = true;
     releaseGradeCache();
     gradeUnavailable = true;
+    releaseReticleCache();
+    reticleUnavailable = true;
     worldLayerController?.abort();
     globalObject?.removeEventListener?.('resize', handleResize);
     const activeLayer = enemyLayer;

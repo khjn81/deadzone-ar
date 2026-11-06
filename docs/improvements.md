@@ -1,6 +1,6 @@
 # Improvement record
 
-Setup is excluded. Scores are implementation-agent rubric judgments out of100. Baseline:33;26 adopted loops:80. Failed candidates and integration retests remain in local raw evidence.
+Setup is excluded. Scores are implementation-agent rubric judgments out of100. Baseline:33;27 adopted loops:80. Failed candidates and integration retests remain in local raw evidence.
 
 | Round | Adopted change | Score |
 | --- | --- | ---: |
@@ -30,5 +30,8 @@ Setup is excluded. Scores are implementation-agent rubric judgments out of100. B
 | 24 | Reuse one owned2Dcanvas for ambient color grading, invalidate on size/DPR changes, release on destroy and fall back safely if unavailable; retain every resolution/workload/performance requirement. | 80 |
 | 25 | Use the existing camera-mode opaque HUD/no-blend treatment during touch training; reset the all-new QAeffect clock, atomically reseed before max diagnostics and keep the stress mission alive while natural8s journeys remain unchanged. Retain every count, resolution and25/50ms limit. | 80 |
 | 26 | Replace56separate casing/fragment meshes with two fixed-capacity InstancedMesh batches; compact visible matrices, reset counts, dispose owned instance buffers, and preserve independent impact materials. Update existing ownership/transform tests for exact20/36instance capacities and expose diagnostic draw/triangle counts. | 80 |
+| 27 | Cache the fixed locked reticle at full DPR while retaining every stroke and live recoil translation; rebuild on DPR changes, release backing storage on destroy and verify native raster reuse/teardown. | 80 |
 
 Round10corrected a native-touch fixture and re-ran the original source, which still failed. Round13 preserved the final pause-frame audio contract. Round21 retained both teardown-error assertions, its30second deadline and strict rendered-model proof. Rounds22–26retain the original25ms average/50ms p95 limits, backing resolution, PBR materials and6/4/20/8/36pool assertions. Round23measures HUD writes210→0; round24bounds ambient gradients; round25corrects fixture timing/compositing; round26batches all20/36instances with matrix and disposal checks. No browser retries were added.
+
+Round27measures130blurred reticle strokes→0in320ms while3Dframes advance, with an explicit owned-sprite backing-store release assertion.

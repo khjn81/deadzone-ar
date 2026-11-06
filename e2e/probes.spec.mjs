@@ -317,3 +317,47 @@ test("ambient gradient work is bounded while3D frames continue updating", async 
   expect(result.frames).toBeGreaterThan(6);
   expect(result.gradients).toBeLessThanOrEqual(4);
 });
+
+test("locked reticles reuse their native blur raster while world frames advance", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__ownedCanvasList = [];
+    const create = Document.prototype.createElement;
+    Document.prototype.createElement = function (...args) {
+      const element = create.apply(this, args);
+      if (element instanceof HTMLCanvasElement) window.__ownedCanvasList.push(element);
+      return element;
+    };
+  });
+  await train(page);
+  await page.evaluate(() => {
+    const qa = window.__DEADZONE__;
+    qa.seedMaximumWorldForQa();
+    const target = qa.getState().enemies[0];
+    qa.setView(target.yaw, target.pitch);
+  });
+  await page.waitForTimeout(100);
+  const evidence = await page.evaluate(async () => {
+    const proto = CanvasRenderingContext2D.prototype;
+    const original = proto.stroke;
+    let blurredStrokes = 0;
+    proto.stroke = function (...args) {
+      if (this.canvas.id === 'arCanvas' && this.shadowBlur > 0) blurredStrokes++;
+      return original.apply(this, args);
+    };
+    const before = window.__DEADZONE__.getRendererDiagnostics().layer.renderCount;
+    let frames;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 320));
+      frames = window.__DEADZONE__.getRendererDiagnostics().layer.renderCount - before;
+    } finally { proto.stroke = original; }
+    const size = 128 * Math.min(2, Math.max(1, window.devicePixelRatio));
+    const cache = window.__ownedCanvasList.filter((canvas) => !canvas.isConnected && canvas.width === size && canvas.height === size);
+    dispatchEvent(new PageTransitionEvent('pagehide'));
+    return { blurredStrokes, frames, cacheCount: cache.length, released: cache.every((canvas) => canvas.width === 0 && canvas.height === 0), globalReleased: !window.__DEADZONE__ };
+  });
+  expect(evidence.frames).toBeGreaterThan(6);
+  expect(evidence.blurredStrokes).toBe(0);
+  expect(evidence.cacheCount).toBe(1);
+  expect(evidence.released).toBe(true);
+  expect(evidence.globalReleased).toBe(true);
+});

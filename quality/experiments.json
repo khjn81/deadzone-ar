@@ -1433,6 +1433,76 @@
         "durationMs": 257068
       }
     },
+    "decision": "keep",
+    "independentCI": {
+      "run": 42174077529,
+      "source": "058cb2fb2576995276bfa095575fccf05171d858",
+      "conclusion": "failure",
+      "functionalChecks": "263 Node per job;46 development and5production passed",
+      "graphics": {
+        "mobileAverageMs": 30.193333333333914,
+        "mobileP95Ms": 35.19999999998254,
+        "desktopAverageMs": 39.075000000004366,
+        "desktopP95Ms": 42.80000000001746
+      },
+      "decision": "Continue optimization; original25/50ms thresholds retained."
+    }
+  },
+  {
+    "round": 27,
+    "observation": "Main-thread CPU profiling spends388ms idle versus only~25ms in JS across30frames; native raster work is the likely remaining bottleneck. The locked reticle repeats six blurred drawing operations despite having fixed geometry.",
+    "hypothesis": "Render the fixed locked reticle once at full DPR and composite it at the live recoil offset; keep moving unlocked reticles on the original path.",
+    "change": "Add one bounded owned128CSSpx reticle sprite, invalidate at DPR changes, preserve every visual stroke and live recoil translation, release on destroy and safely fall back.",
+    "ratings": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "score": 80,
+    "sourceHash": "43759e54c90affafb1d2bfdeaa4cb4912ef78f47a65091c758d4154d6ca78ec5",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 5700
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 38
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 8989,
+        "stats": {
+          "startTime": "2026-11-06T06:37:28.389Z",
+          "duration": 8535.411,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "probe": {
+        "exit": 0,
+        "durationMs": 11193
+      }
+    },
     "decision": "keep"
   }
 ]
