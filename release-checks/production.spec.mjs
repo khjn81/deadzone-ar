@@ -1,3 +1,4 @@
+import { captureApp } from "./capture.mjs";
 import { test, expect } from "@playwright/test";
 import { url } from "../e2e/helpers.mjs";
 test("public production journey reaches a real mission result and replay", async ({
@@ -14,9 +15,7 @@ test("public production journey reaches a real mission result and replay", async
   await expect(page).toHaveURL(/\/game\/index\.html$/);
   await page.goto(url);
   await expect(page.locator("#introScreen")).toBeVisible();
-  await page
-    .locator("#gameApp")
-    .screenshot({ path: info.outputPath("intro.png") });
+  await captureApp(page, info, "intro.png");
   await page.locator("#weapon-sidearm").click();
   await page.locator("#trainingButton").click();
   await expect(page.locator("#gameApp")).toHaveAttribute("data-phase", "game");
@@ -42,20 +41,14 @@ test("public production journey reaches a real mission result and replay", async
   await expect
     .poll(async () => Number(await page.locator("#ammoValue").textContent()))
     .toBe(ammo);
-  await page
-    .locator("#gameApp")
-    .screenshot({ path: info.outputPath("game.png") });
+  await captureApp(page, info, "game.png");
   await page.keyboard.press("Escape");
   await expect(page.locator("#resumeButton")).toBeFocused();
-  await page
-    .locator("#gameApp")
-    .screenshot({ path: info.outputPath("pause.png") });
+  await captureApp(page, info, "pause.png");
   await page.locator("#resumeButton").click();
   await expect(page.locator("#pauseButton")).toBeFocused();
   await expect(page.locator("#resultScreen")).toBeVisible({ timeout: 14000 });
-  await page
-    .locator("#gameApp")
-    .screenshot({ path: info.outputPath("result.png") });
+  await captureApp(page, info, "result.png");
   await page.locator("#replayButton").click();
   await expect(page.locator("#gameApp")).toHaveAttribute("data-phase", "game");
   expect(errors).toEqual([]);

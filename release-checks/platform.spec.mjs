@@ -1,3 +1,4 @@
+import { captureApp } from "./capture.mjs";
 import { test, expect } from "@playwright/test";
 import { url } from "../e2e/helpers.mjs";
 test("installed shell reloads and starts training offline", async ({
@@ -70,7 +71,5 @@ test("native WebGL context loss keeps Canvas combat usable", async ({
   await expect
     .poll(async () => Number(await page.locator("#ammoValue").textContent()))
     .toBe(before - 1);
-  await page
-    .locator("#gameApp")
-    .screenshot({ path: info.outputPath("canvas-fallback.png") });
+  await captureApp(page, info, "canvas-fallback.png");
 });

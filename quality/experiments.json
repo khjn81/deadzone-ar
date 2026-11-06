@@ -1136,9 +1136,9 @@
   },
   {
     "round": 22,
-    "observation": "Linux CI passes263checks and47browsercases but fails the unchanged25ms mobile maximum-world average budget; the3Dcontext requests MSAA.",
+    "observation": "Linux CI passes263checks and47browsercases but fails the unchanged25ms mobile maximum-world average budget; the3Dcontext requests MSAA. CI atb9bb12a passed263+42 cases and4production cases, then WebKit timed out during animated-container screenshot stabilization before its journey or the graphics benchmark could run.",
     "hypothesis": "Disabling multisample shading reduces software-renderer fragment work while keeping full canvas resolution, all models/PBR materials and every workload cap.",
-    "change": "Disable3DMSAA, retain the exact25/50ms budgets and all scene assertions; emit measured failure artifacts and driver/frame metrics before validation.",
+    "change": "Disable3DMSAA, retain the exact25/50ms budgets and all scene assertions; emit measured failure artifacts and driver/frame metrics before validation. Capture artifacts through a clipped page screenshot with animations disabled; keep every functional assertion and deadline.",
     "ratings": [
       4,
       4,
@@ -1162,11 +1162,11 @@
       4
     ],
     "score": 80,
-    "sourceHash": "c6ba6f0ae7c1a33939e18c0440a681b24f7c06ed66394b84a27f5a1bd512c05e",
+    "sourceHash": "2c963038c569b5b3111ac054e5a78b8baf516432c930056706a3ff489322d180",
     "measurements": {
       "unit": {
         "exit": 0,
-        "durationMs": 6396
+        "durationMs": 5804
       },
       "syntax": {
         "exit": 0,
@@ -1174,10 +1174,10 @@
       },
       "e2e": {
         "exit": 0,
-        "durationMs": 4882,
+        "durationMs": 4870,
         "stats": {
-          "startTime": "2026-11-06T05:00:10.527Z",
-          "duration": 4369.513999999999,
+          "startTime": "2026-11-06T05:11:21.192Z",
+          "duration": 4477.197,
           "expected": 2,
           "skipped": 0,
           "unexpected": 0,
@@ -1186,9 +1186,25 @@
       },
       "probe": {
         "exit": 0,
-        "durationMs": 245305
+        "durationMs": 51488
       }
     },
-    "decision": "keep"
+    "decision": "keep",
+    "retainedVerification": {
+      "developmentBrowser": {
+        "passed": 42,
+        "skipped": 0,
+        "unexpected": 0,
+        "evidence": "round22attempt1; application source unchanged in the screenshot-only correction"
+      },
+      "positiveGraphics": {
+        "status": "passed",
+        "evidence": "round22attempt1 and visual capture; unchanged application and graphics workload"
+      },
+      "integrationRetest": {
+        "run": 42166374981,
+        "result": "WebKit artifact locator stabilization timed out before the journey; page-clipped snapshot correction keeps all functional assertions and deadlines"
+      }
+    }
   }
 ]
