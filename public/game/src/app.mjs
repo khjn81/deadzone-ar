@@ -330,6 +330,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   let soundEnabled = readSoundPreference(storage);
   let destroyed = false;
   let launchGeneration = 0;
+  let activeTurnOwner = null;
   let qaHandle = null;
 
   const acquireWakeLock = () => { void wakeLock.acquire(); };
@@ -739,20 +740,29 @@ export function createApp(documentObject, globalObject = globalThis, {
     if (!button) return;
     let activePointer = null;
     let pressedAt = null;
+    let owner = null;
     const press = (event) => {
       if (activePointer !== null && activePointer !== event?.pointerId) return;
       event?.preventDefault?.();
       activePointer = event?.pointerId ?? 'mouse';
       pressedAt = finiteNumber(globalObject?.performance?.now?.(), Date.now());
+      owner = { button, pointerId: activePointer };
+      activeTurnOwner = owner;
       button.setPointerCapture?.(event?.pointerId);
       arController.setTurnInput(direction);
     };
     const release = (event, allowTap = false) => {
-      if (activePointer !== null && event?.pointerId !== undefined && activePointer !== event.pointerId) return;
+      if (activePointer === null || (event?.pointerId !== undefined && activePointer !== event.pointerId)) return;
       const releasedAt = finiteNumber(globalObject?.performance?.now?.(), Date.now());
       const duration = pressedAt === null ? Infinity : releasedAt - pressedAt;
+      const wasOwner = activeTurnOwner === owner;
+      const pointerId = activePointer;
       activePointer = null;
       pressedAt = null;
+      owner = null;
+      try { button.releasePointerCapture?.(pointerId); } catch {}
+      if (!wasOwner) return;
+      activeTurnOwner = null;
       arController.setTurnInput(0);
       if (allowTap && duration >= 0 && duration <= TURN_TAP_MS) {
         arController.nudgeTurn(direction, TURN_TAP_DEGREES);

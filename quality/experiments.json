@@ -475,5 +475,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 10,
+    "observation": "The native two-touch baseline shows releasing an older left touch cancels a newer right hold.",
+    "hypothesis": "One shared turn owner lets only the current gesture stop or tap-turn the view.",
+    "change": "Track button/pointer ownership, ignore unowned releases and release captures without cancelling newer input.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      4,
+      4,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 55,
+    "sourceHash": "08c2557f85a9e885bd904d062bdd71eedc1b200ccf1133cc4f15d7bafaf2b5c4",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10192
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 38
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 10608,
+        "stats": {
+          "startTime": "2026-11-06T04:05:57.256Z",
+          "duration": 10223.918,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]
