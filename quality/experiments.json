@@ -528,5 +528,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 11,
+    "observation": "Persisted pagehide destroys the app and removes its QA/runtime handle, leaving browser-back navigation unusable.",
+    "hypothesis": "BFCache entry should release capture and pause while preserving the application for explicit resume.",
+    "change": "Distinguish persisted pagehide from permanent departure, cancel pending preparation and preserve a paused application.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      4,
+      4,
+      4,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 58,
+    "sourceHash": "7a602170d81eaf3de0021cc88d67d1364c6db513454cb08e29bbee998d2f7a1f",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10051
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 39
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 10877,
+        "stats": {
+          "startTime": "2026-11-06T04:06:31.581Z",
+          "duration": 10492.19,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

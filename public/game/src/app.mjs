@@ -785,6 +785,7 @@ export function createApp(documentObject, globalObject = globalThis, {
     clearCountdown();
     arController.cancelAccess();
     elements.app.dataset.camera = 'false';
+    updateMode(arController.getView());
     elements.start.disabled = false;
     const label = elements.start.querySelector?.('b');
     if (label) label.textContent = '작전 시작';
@@ -977,7 +978,11 @@ export function createApp(documentObject, globalObject = globalThis, {
   listen(documentObject, 'keydown', onKeyDown);
   listen(documentObject, 'visibilitychange', onVisibilityChange);
   listen(globalObject, 'orientationchange', onOrientationChange, { passive: true });
-  listen(globalObject, 'pagehide', destroy, { once: true });
+  listen(globalObject, 'pagehide', (event) => {
+    if (!event.persisted) { destroy(); return; }
+    cancelPreparation();
+    pauseMission('다시 돌아오면 전투 계속을 눌러주세요');
+  });
 
   if (elements.capabilityStatus) elements.capabilityStatus.textContent = capabilityMessage(globalObject);
   audioController.setEnabled(soundEnabled);
