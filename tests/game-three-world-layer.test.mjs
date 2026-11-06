@@ -383,7 +383,7 @@ test('loads each insect species template once and renders six live insects plus 
   assert.deepEqual(renderer.options, {
     canvas: renderer.options.canvas,
     alpha: true,
-    antialias: true,
+    antialias: false,
     powerPreference: 'high-performance'
   });
   assert.equal(renderer.getContext().getContextAttributes().alpha, true);

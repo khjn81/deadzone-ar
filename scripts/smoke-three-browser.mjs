@@ -457,6 +457,10 @@ async function inspectMaximumScene(page, viewport, measurePerformance) {
         worldZIndex: getComputedStyle(worldCanvas).zIndex
       },
       diagnostics: maximumDiagnostics,
+      graphics: {
+        antialias: worldContext?.getContextAttributes?.().antialias,
+        renderer: (() => { const ext = worldContext?.getExtension('WEBGL_debug_renderer_info'); return ext ? worldContext.getParameter(ext.UNMASKED_RENDERER_WEBGL) : 'unavailable'; })()
+      },
       cameraFrameUploads: globalThis.__DEADZONE_CAMERA_FRAME_UPLOADS__,
       nativeCameraCalls: globalThis.__DEADZONE_NATIVE_CAMERA_CALLS__,
       syntheticCameraCalls: globalThis.__DEADZONE_SYNTHETIC_CAMERA_CALLS__ || 0,
@@ -699,8 +703,8 @@ function assertMaximumResult(result, { cameraActive }) {
   assert.equal(result.webglContexts.uniqueCount, 1, 'one world canvas owns one unique WebGL context');
   assert.equal(result.syntheticCameraCalls, cameraActive ? 1 : 0);
   assert.ok(result.performance.positiveRenderDelta > 0);
-  assert.ok(result.performance.averageFrameMs <= MAX_AVERAGE_FRAME_MS);
-  assert.ok(result.performance.p95FrameMs <= MAX_P95_FRAME_MS);
+  assert.ok(result.performance.averageFrameMs <= MAX_AVERAGE_FRAME_MS, `Average frame budget exceeded: ${JSON.stringify({ graphics: result.graphics, performance: result.performance, viewport: result.viewport })}`);
+  assert.ok(result.performance.p95FrameMs <= MAX_P95_FRAME_MS, `P95 frame budget exceeded: ${JSON.stringify({ graphics: result.graphics, performance: result.performance, viewport: result.viewport })}`);
 }
 
 async function main() {
@@ -781,6 +785,12 @@ async function main() {
 
     const modelFailure = await inspectModelFailure(browser, qaUrl, mobileViewport, failures);
 
+    if (artifactFlag >= 0) {
+      const artifactPath = process.argv[artifactFlag + 1];
+      if (!artifactPath) throw new Error('--artifact requires a path');
+      await mkdir(path.dirname(path.resolve(artifactPath)), { recursive: true });
+      await writeFile(artifactPath, `${JSON.stringify({ status: 'measured-before-validation', combat, mobile, desktop, modelFailure, failures }, null, 2)}\n`, 'utf8');
+    }
     assertMaximumResult(mobile, { cameraActive: true });
     assertMaximumResult(desktop, { cameraActive: false });
     assert.deepEqual(mobile.renderSize, {
@@ -879,6 +889,7 @@ async function main() {
     )), 'browser smoke must serve the production module worker instead of the empty fallback');
 
     const result = {
+      status: 'passed',
       combat,
       desktop,
       desktopTeardown,

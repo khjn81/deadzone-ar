@@ -55,7 +55,7 @@ jobs:
       - if: matrix.suite == 'production'
         run: npm run test:release
       - if: matrix.suite == 'production'
-        run: npm run test:graphics -- --artifact test-results-release/graphics.json
+        run: npm run test:graphics -- --artifact test-results-release/graphics.json --screenshot-dir test-results-release/graphics
       - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:

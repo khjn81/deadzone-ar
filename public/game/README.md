@@ -99,3 +99,5 @@ They work alongside the seated sensor mode and the drag-to-aim fallback. Rail
 shots have a bright kinetic burst, while Cryo hits show a freeze burst and
 `FROZEN` feedback. All casing, impact, and particle pools remain bounded for
 mobile performance.
+
+Multisample antialiasing is disabled on the3D canvas to reduce fragment work on software rendering and low-power devices. Canvas HUD resolution and the existing1.5camera pixel-ratio limit stay unchanged. Thin model edges can look sharper; source meshes, PBR materials, textures and all pool limits are retained.

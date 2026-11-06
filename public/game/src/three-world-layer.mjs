@@ -46,7 +46,7 @@ export async function createThreeWorldLayer(canvas, options = {}) {
   }
   try {
     if (aborted) throw abortError();
-    renderer = new T.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+    renderer = new T.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'high-performance' });
     renderer.setClearColor(0x000000, 0); if (renderer.shadowMap) renderer.shadowMap.enabled = false; renderer.outputColorSpace = T.SRGBColorSpace;
     if (!renderer.debug || typeof renderer.debug !== 'object') renderer.debug = {};
     renderer.debug.checkShaderErrors = true;

@@ -8,6 +8,10 @@
 | --- | --- | --- |
 | ![대기 화면](docs/screenshots/intro.png) | ![전투 화면](docs/screenshots/game.png) | ![결과 화면](docs/screenshots/result.png) |
 
+최대 부하 검증 장면입니다. 합성 카메라 배경과 고정된6개체·4사체·효과 풀을 사용하는 그래픽 테스트에서 캡처했습니다.
+
+<img src="docs/screenshots/insect-swarm-mobile.png" width="390" alt="실제 Three.js 모델을 사용하는 최대 부하 검증 장면" />
+
 ## 실행
 
 Node22.22.2와 npm을 기준으로 검증합니다. 계정이나 API 키는 필요하지 않습니다.
@@ -34,7 +38,7 @@ npm run dev
 
 ## 검증과 개선 기록
 
-공개 준비 과정에서21회의 가설·변경·평가 루프를 수행했습니다. 설치·테스트 설정은 회차에 포함하지 않습니다. [루브릭](quality/rubric.json), [실험별 평가](quality/experiments.json), [검증 범위](docs/verification.md)를 함께 공개합니다. 점수는 구현 에이전트의 판단이며 독립적인 사용자 평가를 뜻하지 않습니다.
+공개 준비 과정에서22회의 가설·변경·평가 루프를 수행했습니다. 설치·테스트 설정은 회차에 포함하지 않습니다. [루브릭](quality/rubric.json), [채택한 개선 목록](docs/improvements.md), [실험별 평가](quality/experiments.json), [검증 범위](docs/verification.md)를 함께 공개합니다. 점수는 구현 에이전트의 판단이며 독립적인 사용자 평가를 뜻하지 않습니다.
 
 ```sh
 npx playwright install chromium webkit
