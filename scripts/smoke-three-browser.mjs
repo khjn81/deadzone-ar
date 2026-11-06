@@ -61,6 +61,7 @@ function gameRootFor(cwd) {
 function chromeExecutable() {
   return [
     process.env.DEADZONE_CHROME_PATH,
+    chromium.executablePath(),
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     '/Applications/Chromium.app/Contents/MacOS/Chromium',
     '/usr/bin/google-chrome',
@@ -729,6 +730,24 @@ async function main() {
   let browser;
   try {
     browser = await chromium.launch({ executablePath, headless: true, args: ['--enable-webgl', '--ignore-gpu-blocklist'] });
+    if (injectTeardownErrors) {
+      process.stderr.write('[teardown probe] launching owned application\n');
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      await installBrowserGuards(context);
+      const page = await context.newPage();
+      const pageWatch = watchPage(page, 'teardown-probe', failures);
+      await page.goto(qaUrl, { waitUntil: 'networkidle' });
+      await page.waitForFunction(() => typeof globalThis.__DEADZONE__?.getState === 'function');
+      process.stderr.write('[teardown probe] application loaded; exercising pagehide\n');
+      await page.evaluate(() => {
+        addEventListener('pagehide', () => {
+          console.error('intentional teardown console error');
+          queueMicrotask(() => { throw new Error('intentional teardown page error'); });
+        }, { once: true });
+      });
+      await triggerNormalTeardown(page, pageWatch);
+      throw new Error('Teardown error injection was not rejected');
+    }
     const mobileViewport = { width: 390, height: 844 };
     const mobileContext = await browser.newContext({ deviceScaleFactor: 2, viewport: mobileViewport });
     await installBrowserGuards(mobileContext, { syntheticCamera: true });
@@ -751,14 +770,6 @@ async function main() {
     await seedMaximumScene(desktopPage);
     const desktop = await inspectMaximumScene(desktopPage, desktopViewport, false);
     if (screenshotDirectory) await desktopPage.screenshot({ path: path.join(screenshotDirectory, 'insect-swarm-desktop.png') });
-    if (injectTeardownErrors) {
-      await desktopPage.evaluate(() => {
-        addEventListener('pagehide', () => {
-          console.error('intentional teardown console error');
-          queueMicrotask(() => { throw new Error('intentional teardown page error'); });
-        }, { once: true });
-      });
-    }
     const desktopTeardown = await triggerNormalTeardown(desktopPage, desktopWatch);
     await desktopContext.close();
 

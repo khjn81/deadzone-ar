@@ -13,17 +13,16 @@ jobs:
       matrix:
         suite: [desktop, mobile, production]
     env:
-      NEXT_TELEMETRY_DISABLED: '1'
-      WRANGLER_SEND_METRICS: 'false'
+      NEXT_TELEMETRY_DISABLED: "1"
+      WRANGLER_SEND_METRICS: "false"
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-node@v7.1.0
         with:
-          node-version: '22.22.2'
+          node-version: "22.22.2"
           cache: npm
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Use Ubuntu archive for browser dependencies
-        if: matrix.suite == 'production'
         timeout-minutes: 1
         run: |
           sudo python3 - <<'PYTHON'
@@ -44,6 +43,7 @@ jobs:
           PYTHON
       - run: npx playwright install --with-deps chromium
         if: matrix.suite != 'production'
+        timeout-minutes: 5
       - run: npx playwright install --with-deps chromium webkit
         if: matrix.suite == 'production'
         timeout-minutes: 5
