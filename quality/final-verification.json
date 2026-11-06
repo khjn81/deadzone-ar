@@ -1,0 +1,94 @@
+{
+  "status": "published-and-verified",
+  "testedSourceCommit": "50170fcf71540baa0fc2f765e8edcf1ca2962a7c",
+  "githubRun": "https://github.com/khjn81/deadzone-ar/actions/runs/42175710107",
+  "rubric": {
+    "baseline": 33,
+    "final": 80,
+    "scale": 100,
+    "meaning": "Implementation-agent judgment, not independent human certification"
+  },
+  "adoptedLoops": 27,
+  "baseline": {
+    "nodeChecks": 261,
+    "coreBrowserPassed": 2,
+    "coreBrowserCases": 12
+  },
+  "uniqueNodeChecks": 263,
+  "ci": {
+    "desktop": {
+      "startTime": "2026-11-06T06:39:30.836Z",
+      "duration": 116913.747,
+      "expected": 24,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "mobile": {
+      "startTime": "2026-11-06T06:39:15.717Z",
+      "duration": 107732.97,
+      "expected": 24,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "production": {
+      "startTime": "2026-11-06T06:40:04.703Z",
+      "duration": 62566.850000000006,
+      "expected": 5,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "graphics": {
+    "mobile": {
+      "performance": {
+        "averageFrameMs": 17.716666666666665,
+        "maxAverageFrameMs": 25,
+        "maxP95FrameMs": 50,
+        "p95FrameMs": 21.5,
+        "positiveRenderDelta": 30,
+        "sampleCount": 30
+      },
+      "graphics": {
+        "antialias": false,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "renderSize": {
+        "width": 390,
+        "height": 844,
+        "arBackingRatio": 1.5,
+        "worldBackingRatio": 1.5
+      }
+    },
+    "desktop": {
+      "performance": {
+        "averageFrameMs": 24.17500000000291,
+        "maxAverageFrameMs": 25,
+        "maxP95FrameMs": 50,
+        "p95FrameMs": 27.800000000017462,
+        "positiveRenderDelta": 4,
+        "sampleCount": 4
+      },
+      "graphics": {
+        "antialias": false,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "renderSize": {
+        "width": 518,
+        "height": 800,
+        "arBackingRatio": 1,
+        "worldBackingRatio": 1
+      }
+    }
+  },
+  "retries": 0,
+  "physicalCamera": "not used; canvas-generated media streams",
+  "physicalSensorsAndDevices": "not tested",
+  "notes": [
+    "Maximum-world stress uses an active90second mission and fresh atomic QAeffect seeding. Functional UI journeys still complete naturally in8seconds.",
+    "25ms average/50ms p95, source assets/PBR/backing resolution and original pool assertions are retained.",
+    "Failed infrastructure and integration runs are retained in the local evidence and documented in docs/verification.md."
+  ]
+}

@@ -31,3 +31,11 @@ Round25 removes training-only live HUD blur/blending using the already-tested ca
 Round26 keeps the same20casings and36fragment instances, shared PBR materials, geometry and transforms but submits them through two fixed-capacity InstancedMesh batches. Independent impact/flash materials remain separate. Existing pool tests now inspect exact20/36matrix capacities and rendered instance transforms instead of requiring56separate Mesh objects; they verify reset/reuse, zero frame allocations, partial-construction rollback and disposal. Rendered counts, full backing size and25/50ms limits remain unchanged. Local263checks,46development cases,5production cases and complete graphics workload passed.
 
 Round27 isolates native raster work after a CPU profile showed the main thread mostly idle. A locked reticle retains the same full-DPR strokes, glow and live recoil translation in one owned128CSSpx sprite; unlocked animated reticles retain direct drawing. A browser counter measured130blurred reticle strokes in320ms before caching and0afterwards while3Dframes advanced. The final probe also verifies exactly one sprite and zero-sized backing storage after pagehide. Local263checks,48development cases,5production cases and strict graphics passed; after the disposal assertion,263checks,3targeted cases and full graphics passed again. Prior Linux instancing-only CI passed all functional cases but measured30.19ms mobile/39.08ms desktop; the original25/50ms budgets remain.
+
+<!-- final-public-verification -->
+Final public CI: [all three jobs passed](https://github.com/khjn81/deadzone-ar/actions/runs/42175710107) on source `50170fcf71540baa0fc2f765e8edcf1ca2962a7c`. Each job passed263Node/build checks; desktop24/24, touch mobile24/24 and production5/5browser cases passed, without skips or retries. The strict native graphics smoke passed with all original model/pool/lifecycle assertions.
+
+- mobile: average17.72ms, p9521.50ms, samples30, positive renders30.
+- desktop: average24.18ms, p9527.80ms, samples4, positive renders4.
+
+Driver, full-resolution backing sizes, per-project results, source commit and limits are recorded in [final-verification.json](../quality/final-verification.json). These short bounded runs are not a physical-device battery/thermal certification.
