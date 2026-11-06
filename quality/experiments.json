@@ -316,5 +316,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 7,
+    "observation": "The baseline pause overlay leaves focus behind the dialog and live HUD controls tabbable.",
+    "hypothesis": "Explicit focus, inert gameplay controls and a bounded tab cycle make pause usable with a keyboard.",
+    "change": "Focus resume on pause, isolate the HUD and drag controls, trap Tab in the dialog and return focus when resuming.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 49,
+    "sourceHash": "8a976c3e4b6cc38c4af090485480c374f1a63c3f8e24d716d9549acd1c98e1de",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10090
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 37
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 21626,
+        "stats": {
+          "startTime": "2026-11-06T04:00:57.780Z",
+          "duration": 21243.712,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

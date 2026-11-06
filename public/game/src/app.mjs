@@ -348,6 +348,11 @@ export function createApp(documentObject, globalObject = globalThis, {
     elements.pause.hidden = name !== 'pause';
     elements.result.hidden = name !== 'result';
     elements.app.dataset.phase = name;
+    elements.gameHud.inert = name !== 'game';
+    arController.setTouchEnabled(name === 'game');
+    if (name === 'pause') elements.resume.focus?.({ preventScroll: true });
+    if (name === 'game') elements.pauseButton.focus?.({ preventScroll: true });
+    if (name === 'result') elements.replay.focus?.({ preventScroll: true });
   }
 
   function clearCountdown() {
@@ -771,6 +776,18 @@ export function createApp(documentObject, globalObject = globalThis, {
     if (elements.app.dataset.phase === 'calibration') setScreen('intro');
   }
 
+  function onKeyDown(event) {
+    if (elements.app.dataset.phase !== 'pause' || event.key !== 'Tab') return;
+    const controls = [...(elements.pause.querySelectorAll?.('button:not(:disabled), a[href]') || [])];
+    if (!controls.length) return;
+    const first = controls[0], last = controls.at(-1), active = documentObject.activeElement;
+    if (event.shiftKey && (active === first || !controls.includes(active))) {
+      event.preventDefault(); last.focus();
+    } else if (!event.shiftKey && (active === last || !controls.includes(active))) {
+      event.preventDefault(); first.focus();
+    }
+  }
+
   function onVisibilityChange() {
     if (!documentObject.hidden) return;
     if (['intro', 'calibration'].includes(elements.app.dataset.phase)) cancelPreparation();
@@ -924,6 +941,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   listen(elements.replay, 'click', () => replay());
   listen(elements.shareResult, 'click', shareResult);
   listen(elements.sound, 'click', toggleSound);
+  listen(documentObject, 'keydown', onKeyDown);
   listen(documentObject, 'visibilitychange', onVisibilityChange);
   listen(globalObject, 'orientationchange', onOrientationChange, { passive: true });
   listen(globalObject, 'pagehide', destroy, { once: true });
