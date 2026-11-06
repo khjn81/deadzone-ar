@@ -422,5 +422,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 9,
+    "observation": "Escape does not pause; the new Space/R probe cannot fire or reload from the combat canvas.",
+    "hypothesis": "Context-aware shortcuts provide full keyboard play while native controls keep their own activation.",
+    "change": "Make the canvas focusable; add Escape pause/resume and Space/R combat actions with repeat, modifier and editable/native-control guards.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      4,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 52,
+    "sourceHash": "e5aaa2265056a6f1ecf896e2d63d213a696b6d84816de2c4fc32f116862b34fe",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10194
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 37
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 15560,
+        "stats": {
+          "startTime": "2026-11-06T04:03:11.990Z",
+          "duration": 15181.293,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

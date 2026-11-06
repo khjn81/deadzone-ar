@@ -782,6 +782,20 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   function onKeyDown(event) {
+    if (event.defaultPrevented || event.isComposing || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key === 'Escape' && !event.repeat) {
+      if (state.phase === PHASES.PLAYING) { event.preventDefault(); pauseMission(); }
+      else if (state.phase === PHASES.PAUSED) { event.preventDefault(); resumeMission(); }
+      return;
+    }
+    const editable = event.target?.isContentEditable || event.target?.closest?.('input, textarea, select, [contenteditable]');
+    if (state.phase === PHASES.PLAYING && !editable && !event.repeat) {
+      const nativeControl = event.target?.closest?.('button, a, summary');
+      if ((event.code === 'Space' || event.key === ' ') && !nativeControl) {
+        event.preventDefault(); shoot(); return;
+      }
+      if (event.key?.toLowerCase() === 'r') { event.preventDefault(); reload(); return; }
+    }
     if (elements.app.dataset.phase !== 'pause' || event.key !== 'Tab') return;
     const controls = [...(elements.pause.querySelectorAll?.('button:not(:disabled), a[href]') || [])];
     if (!controls.length) return;
@@ -925,6 +939,10 @@ export function createApp(documentObject, globalObject = globalThis, {
     audioController.destroy();
   }
 
+  elements.canvas.tabIndex = 0;
+  elements.fire.setAttribute('aria-keyshortcuts', 'Space');
+  elements.reload.setAttribute('aria-keyshortcuts', 'R');
+  elements.pauseButton.setAttribute('aria-keyshortcuts', 'Escape');
   arController.attachPointer(elements.canvas, { onTap: shoot });
   listen(elements.start, 'click', startWithPermissions);
   listen(elements.training, 'click', startTraining);
