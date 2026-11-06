@@ -79,6 +79,7 @@ export class ARController {
     this.mode = 'touch';
     this.videoElement = null;
     this.stream = null;
+    this.cameraListeners = [];
     this.hasSample = false;
     this.smoothedYaw = 0;
     this.smoothedPitch = 0;
@@ -174,6 +175,7 @@ export class ARController {
       try {
         if (videoElement.srcObject !== retainedStream) videoElement.srcObject = retainedStream;
         await videoElement.play?.();
+        if (this.accessCurrent(generation)) this.watchCamera(retainedStream, videoElement);
         return this.accessCurrent(generation);
       } catch {
         return false;
@@ -208,6 +210,7 @@ export class ARController {
       videoElement.srcObject = acquiredStream;
       await videoElement.play?.();
       if (!this.accessCurrent(generation)) throw new Error('Cancelled camera request');
+      this.watchCamera(acquiredStream, videoElement);
       return true;
     } catch (_error) {
       let tracks = [];
@@ -222,6 +225,28 @@ export class ARController {
       } catch {}
       if (this.stream === acquiredStream) this.stream = null;
       return false;
+    }
+  }
+
+  clearCameraListeners() {
+    for (const remove of this.cameraListeners.splice(0)) { try { remove(); } catch {} }
+  }
+
+  watchCamera(stream, video) {
+    this.clearCameraListeners();
+    const ended = () => {
+      if (this.destroyed || this.stream !== stream) return;
+      this.clearCameraListeners();
+      this.stream = null;
+      for (const track of stream?.getTracks?.() || []) { try { track.stop?.(); } catch {} }
+      if (video.srcObject === stream) video.srcObject = null;
+      this.cameraActive = false;
+      this.mode = this.sensorGranted ? 'hybrid' : 'touch';
+      this.onStatus({ camera: false, sensor: this.sensorGranted, mode: this.mode });
+    };
+    for (const track of stream?.getVideoTracks?.() || []) {
+      track.addEventListener?.('ended', ended);
+      this.cameraListeners.push(() => track.removeEventListener?.('ended', ended));
     }
   }
 
@@ -554,6 +579,7 @@ export class ARController {
 
   cancelAccess() {
     this.accessGeneration += 1;
+    this.clearCameraListeners();
     if (this.orientationAttached) {
       this.globalObject?.removeEventListener?.('deviceorientation', this.handleOrientation);
       this.orientationAttached = false;

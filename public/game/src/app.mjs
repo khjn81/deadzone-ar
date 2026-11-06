@@ -286,7 +286,11 @@ export function createApp(documentObject, globalObject = globalThis, {
   const options = parseGameOptions(globalObject?.location?.search);
   const storage = safeStorage(globalObject);
   const initialWeapon = readWeaponPreference(storage);
-  const arController = new ARController({ globalObject });
+  const arController = new ARController({ globalObject, onStatus(access) {
+    if (destroyed) return;
+    elements.app.dataset.camera = String(access.camera);
+    updateMode(arController.getView());
+  } });
   arController.setAimMode(readAimMode(storage));
   const audioController = audioControllerFactory({ globalObject });
   const wakeLock = wakeLockFactory({ globalObject });

@@ -210,5 +210,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 5,
+    "observation": "An ended video track leaves the camera flag true and an attached dead stream in the frozen browser test.",
+    "hypothesis": "Owned track-end listeners can retire capture and update the view without ending a mission.",
+    "change": "Observe track termination, stop and detach the owned stream, remove listeners on cancellation, and publish the camera state.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 44,
+    "sourceHash": "ebe9794834ea36fcb03e0fdf8bcc46c76d33769a3fef0bdbdd3e358aaacb1b61",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10099
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 37
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 10261,
+        "stats": {
+          "startTime": "2026-11-06T03:59:35.658Z",
+          "duration": 9880.539999999999,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]
