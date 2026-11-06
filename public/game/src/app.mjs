@@ -325,6 +325,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   let missionNumber = 0;
   let soundEnabled = readSoundPreference(storage);
   let destroyed = false;
+  let launchGeneration = 0;
   let qaHandle = null;
 
   const acquireWakeLock = () => { void wakeLock.acquire(); };
@@ -596,7 +597,8 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   async function startWithPermissions() {
-    if (elements.start.disabled) return;
+    if (destroyed || elements.start.disabled) return;
+    const generation = ++launchGeneration;
     elements.start.disabled = true;
     audioController.syncThreatBuzz?.([], 0);
     const label = elements.start.querySelector?.('b');
@@ -605,6 +607,7 @@ export function createApp(documentObject, globalObject = globalThis, {
       audioController.unlock(),
       arController.requestAccess(elements.video)
     ]);
+    if (destroyed || generation !== launchGeneration || access.cancelled) return;
     elements.app.dataset.camera = String(access.camera);
     showToast(permissionMessage(access));
     elements.start.disabled = false;
@@ -613,7 +616,14 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   async function startTraining() {
+    if (destroyed) return;
+    const generation = ++launchGeneration;
+    arController.cancelAccess();
+    elements.start.disabled = false;
+    const label = elements.start.querySelector?.('b');
+    if (label) label.textContent = '작전 시작';
     await audioController.unlock();
+    if (destroyed || generation !== launchGeneration) return;
     elements.app.dataset.camera = 'false';
     showToast('터치 훈련 모드: 드래그로 조준하고 탭으로 사격하세요');
     startCalibration();
@@ -682,13 +692,15 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   async function retryAccess() {
-    if (elements.retryAccess.disabled) return;
+    if (destroyed || elements.retryAccess.disabled) return;
+    const generation = ++launchGeneration;
     elements.retryAccess.disabled = true;
     try {
       const [, access] = await Promise.all([
         audioController.unlock(),
         arController.requestAccess(elements.video)
       ]);
+      if (destroyed || generation !== launchGeneration || access.cancelled) return;
       elements.app.dataset.camera = String(access.camera);
       renderer.resize(arController.getView());
       arController.calibrate();
@@ -851,6 +863,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   function destroy() {
     if (destroyed) return;
     destroyed = true;
+    launchGeneration += 1;
     releaseWakeLock();
     clearCountdown();
     if (feedbackTimer !== null) clearTimer(feedbackTimer);

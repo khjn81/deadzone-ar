@@ -104,5 +104,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 3,
+    "observation": "The frozen browser case shows an older camera request overrides a later training choice.",
+    "hypothesis": "A launch generation plus controller cancellation keeps the latest explicit mode choice authoritative.",
+    "change": "Cancel access on training selection and ignore stale launch/retry continuations and destroyed app callbacks.",
+    "ratings": [
+      3,
+      4,
+      4,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 39,
+    "sourceHash": "161d0d38f4d8a9140960c44d27326e2c7a1ae1a9d4c17ec821eb09f5b423af42",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10066
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 39
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 6979,
+        "stats": {
+          "startTime": "2026-11-06T03:58:00.627Z",
+          "duration": 6597.936000000001,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]
