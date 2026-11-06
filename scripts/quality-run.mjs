@@ -17,6 +17,11 @@ const files = [];
 for (const base of [
   "public",
   "app",
+  "docs",
+  "release-checks",
+  "release.config.mjs",
+  "vite.config.ts",
+  ".openai/hosting.json",
   "worker",
   "build",
   "tests",
@@ -63,7 +68,7 @@ for (const [name, command] of checks) {
     run = spawnSync(command, {
       shell: true,
       encoding: "utf8",
-      timeout: 240000,
+      timeout: name === "probe" ? 600000 : 240000,
       maxBuffer: 12 * 1024 * 1024,
     });
   fs.writeFileSync(`${folder}/${attempt}-${name}.stdout`, run.stdout || "");

@@ -1,5 +1,5 @@
 {
-  "name": "deadzone-ar-site",
+  "name": "deadzone-ar",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -18,7 +18,11 @@
     "prebuild": "npm run cache:check",
     "assets:check": "node scripts/assets-check.mjs",
     "pretest": "npm run assets:check",
-    "verify:clean": "node scripts/clean-install.mjs"
+    "verify:clean": "node scripts/clean-install.mjs",
+    "test:e2e": "playwright test",
+    "test:release": "playwright test --config release.config.mjs",
+    "test:graphics": "node scripts/graphics-check.mjs",
+    "verify:release": "node scripts/release-check.mjs"
   },
   "dependencies": {
     "next": "16.3.0",
@@ -47,5 +51,7 @@
     "vite": "8.0.13",
     "wrangler": "4.92.0"
   },
-  "type": "module"
+  "type": "module",
+  "description": "A local-first insect swarm AR browser shooter with touch training and recoverable rendering.",
+  "license": "MIT"
 }

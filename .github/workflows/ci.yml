@@ -1,0 +1,45 @@
+name: Verify DEADZONE
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [desktop, mobile, production]
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '22.22.2'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+        if: matrix.suite != 'production'
+      - run: npx playwright install --with-deps chromium webkit
+        if: matrix.suite == 'production'
+      - run: npm test
+      - if: matrix.suite != 'production'
+        run: npx playwright test --project=${{ matrix.suite }} --reporter=list,json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: test-results/e2e.json
+      - if: matrix.suite == 'production'
+        run: npm run test:release
+      - if: matrix.suite == 'production'
+        run: npm run test:graphics -- --artifact test-results-release/graphics.json
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: browser-evidence-${{ matrix.suite }}
+          path: |
+            test-results/
+            test-results-release/
+          retention-days: 7

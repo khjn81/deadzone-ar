@@ -1009,5 +1009,62 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 20,
+    "observation": "The public package lacks an accurate root guide, own license, screenshots, CI and final cross-engine/offline/runtime evidence.",
+    "hypothesis": "A documented reproducible release with complete final browser checks makes the project reviewable and ready to publish.",
+    "change": "Add honest setup/controls/limits, MIT and third-party notices, pinned CI,42 development E2E cases,5 production holdouts and the original strict native graphics smoke.",
+    "ratings": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "score": 80,
+    "sourceHash": "4bc75772f8ae44c57ce0475c1db0883e24ea15c99d8cdbe1cd6fcb8b714118bb",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 11220
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 37
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 5253,
+        "stats": {
+          "startTime": "2026-11-06T04:22:31.939Z",
+          "duration": 4819.14,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "probe": {
+        "exit": 0,
+        "durationMs": 246333
+      }
+    },
+    "decision": "keep"
   }
 ]
