@@ -1,3 +1,4 @@
+import { expectedCacheName } from '../scripts/cache-version.mjs';
 import assert from 'node:assert/strict';
 import { access, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
@@ -62,7 +63,7 @@ test('offline shell inventories every local game module and required asset exact
   const { APP_SHELL, CACHE_NAME, CACHE_PREFIX } = await loadPwaConfig();
 
   assert.equal(CACHE_PREFIX, 'deadzone-swarm-');
-  assert.equal(CACHE_NAME, 'deadzone-swarm-v3');
+  assert.equal(CACHE_NAME, await expectedCacheName(), 'cache revision must match every offline-shell byte');
   assert.equal(new Set(APP_SHELL).size, APP_SHELL.length, 'cache inventory must not contain duplicates');
   assert.ok(APP_SHELL.every((asset) => asset.startsWith('/game/') && !asset.includes('://')));
 

@@ -899,5 +899,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 18,
+    "observation": "The offline cache stays at a manually fixed v3 across all source changes; a content-version check rejects this stale revision.",
+    "hypothesis": "Deriving cache names from the entire offline shell makes updates explicit and prevents accidental stale releases.",
+    "change": "Add deterministic shell hashing and a prebuild consistency gate; replace the old literal-version assertion with an exact content-derived assertion.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 69,
+    "sourceHash": "e2c437e4ddbcc69f29e37db8f523366426cf410bd7ba6f50f927ae5cfec3ec44",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10328
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 39
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 19382,
+        "stats": {
+          "startTime": "2026-11-06T04:15:52.775Z",
+          "duration": 19001.498,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]
