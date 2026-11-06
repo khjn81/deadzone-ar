@@ -1,6 +1,6 @@
 # Improvement record
 
-Setup is excluded. Scores are implementation-agent rubric judgments out of100. Baseline:33;23 adopted loops:80. Failed candidates and integration retests remain in local raw evidence.
+Setup is excluded. Scores are implementation-agent rubric judgments out of100. Baseline:33;24 adopted loops:80. Failed candidates and integration retests remain in local raw evidence.
 
 | Round | Adopted change | Score |
 | --- | --- | ---: |
@@ -27,5 +27,6 @@ Setup is excluded. Scores are implementation-agent rubric judgments out of100. B
 | 21 | Keep the isolated negative path but wait for loaded models and a verified3D frame before injecting pagehide errors. Preserve original30s/both-error assertions, strict per-request abort proof and all positive stress/performance checks; pin Chromium and use the upstream package mirror. | 80 |
 | 22 | Disable3DMSAA, retain the exact25/50ms budgets and all scene assertions; emit measured failure artifacts and driver/frame metrics before validation. Capture artifacts through a clipped page screenshot with animations disabled; keep every functional assertion and deadline. | 80 |
 | 23 | Cache HUD state signatures; change text/attributes/disabled flags only when their values change; retain all rendering workloads and25/50ms budgets. | 80 |
+| 24 | Reuse one owned2Dcanvas for ambient color grading, invalidate on size/DPR changes, release on destroy and fall back safely if unavailable; retain every resolution/workload/performance requirement. | 80 |
 
-Round10corrected a native-touch fixture and re-ran the original source, which still failed. Round13 preserved the final pause-frame audio contract. Round21 retained both teardown-error assertions, its30second deadline and strict rendered-model proof. Rounds22and23 retain the original25ms average/50ms p95 limits, backing resolution, PBR materials and scene caps. Round23measures stable HUD writes dropping210→0 without freezing simulation. No browser retries were added.
+Round10corrected a native-touch fixture and re-ran the original source, which still failed. Round13 preserved the final pause-frame audio contract. Round21 retained both teardown-error assertions, its30second deadline and strict rendered-model proof. Rounds22–24retain the original25ms average/50ms p95 limits, backing resolution, PBR materials and scene caps. Round23measures stable HUD writes dropping210→0 without freezing simulation. Round24bounds ambient gradient builds while3Dframes continue. No browser retries were added.

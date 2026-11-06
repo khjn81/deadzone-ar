@@ -7,6 +7,7 @@ const TAU = Math.PI * 2;
 const MAX_PARTICLES = 110;
 const MAX_PIXEL_RATIO = 2;
 const MAX_CAMERA_PIXEL_RATIO = 1.5;
+const AMBIENT_REFRESH_MS = 100;
 const PSEUDO_SURFACE_DEPTH = 0.72;
 const INSECT_PALETTES = Object.freeze(Object.fromEntries(
   Object.entries(SPECIES_PROFILES).map(([species, profile]) => [species, profile.canvasPalette])
@@ -393,12 +394,61 @@ export function createRenderer(canvas, {
   let effectTimestamp = null;
   let diagnosticFrame = null;
   let qaSeedGeneration = 0;
+  let gradeCanvas = null;
+  let gradeContext = null;
+  let gradeSize = '';
+  let gradeTimestamp = -Infinity;
+  let gradeUnavailable = false;
   const effects = combatEffectsFactory();
   const AbortControllerClass = globalObject?.AbortController || globalThis.AbortController;
   const worldLayerController = typeof AbortControllerClass === 'function'
     ? new AbortControllerClass()
     : null;
   const particles = [];
+
+  function releaseGradeCache() {
+    if (gradeCanvas) {
+      try { gradeCanvas.width = 0; gradeCanvas.height = 0; } catch {}
+    }
+    gradeCanvas = null;
+    gradeContext = null;
+    gradeSize = '';
+    gradeTimestamp = -Infinity;
+  }
+
+  function drawAmbientGrade(now) {
+    if (!gradeContext && !gradeUnavailable) {
+      try {
+        gradeCanvas = canvas.ownerDocument?.createElement?.('canvas') || null;
+        gradeContext = gradeCanvas?.getContext?.('2d') || null;
+      } catch {}
+      if (!gradeContext) { releaseGradeCache(); gradeUnavailable = true; }
+    }
+    if (gradeContext) {
+      try {
+        const size = `${width}:${height}:${pixelRatio}`;
+        if (size !== gradeSize) {
+          gradeCanvas.width = Math.max(1, Math.round(width * pixelRatio));
+          gradeCanvas.height = Math.max(1, Math.round(height * pixelRatio));
+          gradeSize = size;
+          gradeTimestamp = -Infinity;
+        }
+        if (!Number.isFinite(gradeTimestamp)
+          || (!reducedMotion && (now < gradeTimestamp || now - gradeTimestamp >= AMBIENT_REFRESH_MS))) {
+          gradeContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+          gradeContext.clearRect(0, 0, width, height);
+          drawCameraGrade(gradeContext, width, height, now, reducedMotion);
+          gradeTimestamp = now;
+        }
+        ctx.drawImage(gradeCanvas, 0, 0, width, height);
+        return;
+      } catch {
+        releaseGradeCache();
+        gradeUnavailable = true;
+      }
+    }
+    drawCameraGrade(ctx, width, height, now, reducedMotion);
+  }
 
   function disposeEnemyLayer(layer) {
     try {
@@ -546,7 +596,7 @@ export function createRenderer(canvas, {
     ctx.save();
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.clearRect(0, 0, width, height);
-    drawCameraGrade(ctx, width, height, now, reducedMotion);
+    drawAmbientGrade(now);
     drawWorldGrid(ctx, width, height, view, now, reducedMotion);
 
     const visible = [];
@@ -671,6 +721,8 @@ export function createRenderer(canvas, {
   function destroy() {
     if (destroyed) return;
     destroyed = true;
+    releaseGradeCache();
+    gradeUnavailable = true;
     worldLayerController?.abort();
     globalObject?.removeEventListener?.('resize', handleResize);
     const activeLayer = enemyLayer;

@@ -101,3 +101,5 @@ shots have a bright kinetic burst, while Cryo hits show a freeze burst and
 mobile performance.
 
 Multisample antialiasing is disabled on the3D canvas to reduce fragment work on software rendering and low-power devices. Canvas HUD resolution and the existing1.5camera pixel-ratio limit stay unchanged. Thin model edges can look sharper; source meshes, PBR materials, textures and all pool limits are retained.
+
+The ambient color-grade gradients use one owned full-resolution2Dcanvas cache, refreshed every100ms. Aiming, grid projection, combat effects, simulation and3Drendering continue every frame. Resize/DPR changes invalidate the cache; destruction releases its backing storage. Reduced-motion grading remains cached until resize. Unsupported cache creation falls back to direct grading.

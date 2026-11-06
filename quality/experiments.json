@@ -1263,5 +1263,62 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 24,
+    "observation": "LatestSwiftShaderCIpasses263checks and49browsercases but averages26.91ms,p9529.2ms. A targeted native-canvas probe builds27ambient gradients in320ms while3Dkeeps drawing.",
+    "hypothesis": "Caching the slowly moving full-resolution ambient grade at10Hz removes repeated gradient rasterization while combat, grid, aiming and3Dcontinue each frame.",
+    "change": "Reuse one owned2Dcanvas for ambient color grading, invalidate on size/DPR changes, release on destroy and fall back safely if unavailable; retain every resolution/workload/performance requirement.",
+    "ratings": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "score": 80,
+    "sourceHash": "ae49543b2c4d7fdcdffe7d3cb8e69e98338dc1cea4d03876e97a7398bec3e8a9",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 5605
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 37
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 10738,
+        "stats": {
+          "startTime": "2026-11-06T05:39:36.359Z",
+          "duration": 10357.859999999999,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "probe": {
+        "exit": 0,
+        "durationMs": 256195
+      }
+    },
+    "decision": "keep"
   }
 ]

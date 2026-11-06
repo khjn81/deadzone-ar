@@ -276,3 +276,44 @@ test("stable HUD values avoid repeated DOM writes while simulation keeps running
   expect(result.elapsed).toBeGreaterThan(0.15);
   expect(result.writes).toBe(0);
 });
+
+test("ambient gradient work is bounded while3D frames continue updating", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    window.__gradientBuilds = 0;
+    for (const Ctor of [
+      window.CanvasRenderingContext2D,
+      window.OffscreenCanvasRenderingContext2D,
+    ]) {
+      if (!Ctor) continue;
+      const original = Ctor.prototype.createLinearGradient;
+      Ctor.prototype.createLinearGradient = function (...args) {
+        if (args[0] === 0 && args[1] === 0 && args[2] === 0 && args[3] > 100)
+          window.__gradientBuilds++;
+        return original.apply(this, args);
+      };
+    }
+  });
+  await train(page);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => window.__DEADZONE__.getRendererDiagnostics().enemyRenderMode,
+      ),
+    )
+    .toBe("ready");
+  const result = await page.evaluate(async () => {
+    window.__gradientBuilds = 0;
+    const before =
+      window.__DEADZONE__.getRendererDiagnostics().layer.renderCount;
+    await new Promise((resolve) => setTimeout(resolve, 320));
+    return {
+      gradients: window.__gradientBuilds,
+      frames:
+        window.__DEADZONE__.getRendererDiagnostics().layer.renderCount - before,
+    };
+  });
+  expect(result.frames).toBeGreaterThan(6);
+  expect(result.gradients).toBeLessThanOrEqual(4);
+});
