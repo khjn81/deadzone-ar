@@ -15,7 +15,10 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern public/game",
     "cache:stamp": "node scripts/cache-version.mjs --write",
     "cache:check": "node scripts/cache-version.mjs --check",
-    "prebuild": "npm run cache:check"
+    "prebuild": "npm run cache:check",
+    "assets:check": "node scripts/assets-check.mjs",
+    "pretest": "npm run assets:check",
+    "verify:clean": "node scripts/clean-install.mjs"
   },
   "dependencies": {
     "next": "16.3.0",

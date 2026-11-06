@@ -952,5 +952,62 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 19,
+    "observation": "The public source has license sidecars but no automatic asset hash gate, vendor reproduction gate or fresh-source install command.",
+    "hypothesis": "Verifying original assets, pinned runtime reproduction and a dependency-free source copy makes the release reproducible.",
+    "change": "Add14 asset checks, byte-identical Three.js regeneration and an isolated lockfile install/build/full-test verification; independently verify original model downloads and1195 npm package files.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      4,
+      0,
+      4,
+      1
+    ],
+    "score": 71,
+    "sourceHash": "13e67be400e7262206e11b5569e820635c84170c8adc2edc09b1cc83db9f8f5a",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 11407
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 41
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 5449,
+        "stats": {
+          "startTime": "2026-11-06T04:18:02.458Z",
+          "duration": 4925.492,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "probe": {
+        "exit": 0,
+        "durationMs": 16812
+      }
+    },
+    "decision": "keep"
   }
 ]

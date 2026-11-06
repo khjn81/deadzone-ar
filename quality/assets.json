@@ -1,0 +1,76 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "path": "public/favicon.svg",
+      "bytes": 1145,
+      "sha256": "cf16ee698656d90be87291c1f4846cbb1da7288775cc0f394d81a4c0a42e1e39"
+    },
+    {
+      "path": "public/game/assets/models/infected-bulwark.CC0-1.0.txt",
+      "bytes": 585,
+      "sha256": "4d3c0b02bca12bb018b8ea931b096fd196c7daefeb047426a0d5e9734ca9a779"
+    },
+    {
+      "path": "public/game/assets/models/infected-bulwark.glb",
+      "bytes": 803728,
+      "sha256": "718b2be1cd6c1b4361e9e4cb7610459b994575d9e3e7b7818348670f53612166"
+    },
+    {
+      "path": "public/game/assets/models/infected-queen.CC0-1.0.txt",
+      "bytes": 580,
+      "sha256": "640b845e986b0a2122e79a2afdf5e5ede2ee5b6d21fb0b662729609f40a3773d"
+    },
+    {
+      "path": "public/game/assets/models/infected-queen.glb",
+      "bytes": 193200,
+      "sha256": "29a3ac29e6859208bdab9db3d34387e1d154f14564bd17cdc57eda669cb557cf"
+    },
+    {
+      "path": "public/game/assets/models/infected-stinger.CC0-1.0.txt",
+      "bytes": 588,
+      "sha256": "fae2dfe8a5ddacbe9b06838c60ee7db61732c5e2430417676209e182f067d026"
+    },
+    {
+      "path": "public/game/assets/models/infected-stinger.glb",
+      "bytes": 183812,
+      "sha256": "61a48cfba610e46abba0c98f5371d331f60ed087a55a335580cbf27ba4b3d190"
+    },
+    {
+      "path": "public/game/assets/models/infected-swarmer.CC-BY-4.0.txt",
+      "bytes": 1452,
+      "sha256": "cd7bab4b5ff921841249acbdd981b7bd7e4331c3b48d25b542d575d328edb5ab"
+    },
+    {
+      "path": "public/game/assets/models/infected-swarmer.glb",
+      "bytes": 1310064,
+      "sha256": "ccda1802038a0399b2c9cc835fa313e5b710455f484d3d44da7e57833b177d4b"
+    },
+    {
+      "path": "public/game/icons/icon-192.png",
+      "bytes": 9252,
+      "sha256": "c65770bff6735f7e4ecdc3e38633e1be3eb466e7e341476eaca10bdaf14c7a29"
+    },
+    {
+      "path": "public/game/icons/icon-512.png",
+      "bytes": 25294,
+      "sha256": "cba2a416f841aa1d445e22cb5d7f712107421e3eb6aadc6808fa10dedb472710"
+    },
+    {
+      "path": "public/game/src/vendor/THREE-LICENSE.txt",
+      "bytes": 1081,
+      "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc"
+    },
+    {
+      "path": "public/game/src/vendor/three-runtime.mjs",
+      "bytes": 774371,
+      "sha256": "71484822bac6dda4824d280dac8fbee094f81871830123323d994e0bcf885144"
+    },
+    {
+      "path": "public/og.png",
+      "bytes": 957490,
+      "sha256": "7e0d92cdb765ca8b712446af18ec3e4b6ccd5c5eb40b43c9cbcbffedf0ca513b"
+    }
+  ],
+  "model_provenance": "See public/game/assets/models/*.txt and upstream-verification.json"
+}

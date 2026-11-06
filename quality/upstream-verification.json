@@ -1,0 +1,39 @@
+{
+  "checked": "2026-11-06",
+  "primary_license_pages": [
+    "https://poly.pizza/m/GcttdvsqsQ",
+    "https://poly.pizza/m/3tCnJC9UYA",
+    "https://poly.pizza/m/6HsU6GQt3a",
+    "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/MosquitoInAmber"
+  ],
+  "verification": [
+    {
+      "file": "infected-queen.CC0-1.0.txt",
+      "url": "https://static.poly.pizza/19203489-125b-41f5-b9c9-801a522cb775.glb",
+      "sha256": "29a3ac29e6859208bdab9db3d34387e1d154f14564bd17cdc57eda669cb557cf",
+      "bytes": 193200,
+      "matches": true
+    },
+    {
+      "file": "infected-stinger.CC0-1.0.txt",
+      "url": "https://static.poly.pizza/fb7d7a9e-5584-4e0b-a1bf-251fc9946696.glb",
+      "sha256": "61a48cfba610e46abba0c98f5371d331f60ed087a55a335580cbf27ba4b3d190",
+      "bytes": 183812,
+      "matches": true
+    },
+    {
+      "file": "infected-bulwark.CC0-1.0.txt",
+      "url": "https://static.poly.pizza/8e228e46-8838-4362-80ef-297b8d281966.glb",
+      "sha256": "718b2be1cd6c1b4361e9e4cb7610459b994575d9e3e7b7818348670f53612166",
+      "bytes": 803728,
+      "matches": true
+    },
+    {
+      "package": "three@0.185.1",
+      "integrity": "sha512-5aojFCXKwnjBRZvUnt3WFfEcvUJgkN5LlijRFN95hMy8WVkG4I0QNcJE+OuWvuJ0bOdStrbfXn0pkd6/QyiAlg==",
+      "installed_files_match_official_tarball": 1195,
+      "vendor_rebuild_identical": true
+    }
+  ],
+  "swarmer": "Existing transformed derivative matches its recorded SHA256; attribution and transformation sidecar retained. Upstream author/license independently confirmed; derivative is not claimed byte-identical to source."
+}
