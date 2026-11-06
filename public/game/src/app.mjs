@@ -334,6 +334,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   let launchGeneration = 0;
   let activeTurnOwner = null;
   let qaHandle = null;
+  let lastHudSignature = null;
 
   const acquireWakeLock = () => { void wakeLock.acquire(); };
   const releaseWakeLock = () => { void wakeLock.release(); };
@@ -408,6 +409,21 @@ export function createApp(documentObject, globalObject = globalThis, {
     }, 300);
   }
 
+  function writeText(node, value) {
+    if (!node) return;
+    const text = String(value);
+    if (node.textContent !== text) node.textContent = text;
+  }
+
+  function writeAttribute(node, name, value) {
+    const text = String(value);
+    if (node?.getAttribute?.(name) !== text) node?.setAttribute?.(name, text);
+  }
+
+  function writeDisabled(node, value) {
+    if (node && node.disabled !== Boolean(value)) node.disabled = Boolean(value);
+  }
+
   function updateMode(view) {
     if (!elements.mode) return;
     const sensorActive = view.sensorFresh;
@@ -418,8 +434,7 @@ export function createApp(documentObject, globalObject = globalThis, {
         : view.cameraActive ? 'AR SENSOR' : 'SENSOR AIM'
       : view.cameraActive ? 'CAM + TOUCH' : 'TOUCH TRAINING';
     const labelNode = elements.mode.querySelector?.('span');
-    if (labelNode) labelNode.textContent = label;
-    else elements.mode.textContent = label;
+    writeText(labelNode || elements.mode, label);
   }
 
   function updateAimModeButtons(mode) {
@@ -440,8 +455,8 @@ export function createApp(documentObject, globalObject = globalThis, {
     for (const id of WEAPON_IDS) {
       for (const button of [elements.weaponButtons[id], elements.hudWeaponButtons[id]]) {
         if (!button) continue;
-        button.setAttribute('aria-pressed', String(id === selectedWeapon));
-        button.disabled = state.weapon?.reloading === true;
+        writeAttribute(button, 'aria-pressed', id === selectedWeapon);
+        writeDisabled(button, state.weapon?.reloading === true);
       }
     }
   }
@@ -457,31 +472,37 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   function updateHud(view) {
-    elements.time.textContent = formatTime(state.remaining);
-    elements.score.textContent = String(Math.round(state.score)).padStart(6, '0');
-    elements.wave.textContent = `0${state.wave} / 03`;
-    elements.shield.textContent = String(Math.round(state.shield));
-    elements.shieldFill.style.width = `${clamp(state.shield, 0, 100)}%`;
-    elements.shieldFill.parentElement?.setAttribute('aria-valuenow', String(Math.round(state.shield)));
+    const signature = [state.phase, Math.ceil(state.remaining), Math.round(state.score),
+      state.wave, state.shield, state.ammo, state.selectedWeapon, state.weapon.reloading,
+      state.combo, renderInfo.lockedEnemyId, view.sensorFresh, view.aimMode, view.cameraActive].join('|');
+    if (signature === lastHudSignature) return;
+    lastHudSignature = signature;
+    writeText(elements.time, formatTime(state.remaining));
+    writeText(elements.score, String(Math.round(state.score)).padStart(6, '0'));
+    writeText(elements.wave, `0${state.wave} / 03`);
+    writeText(elements.shield, Math.round(state.shield));
+    const shieldWidth = `${clamp(state.shield, 0, 100)}%`;
+    if (elements.shieldFill.style.width !== shieldWidth) elements.shieldFill.style.width = shieldWidth;
+    writeAttribute(elements.shieldFill.parentElement, 'aria-valuenow', Math.round(state.shield));
     elements.shieldFill.closest?.('.shield-card')?.classList.toggle('is-critical', state.shield <= 30);
     const profile = weaponProfile(state.selectedWeapon);
-    elements.ammo.textContent = String(state.ammo).padStart(2, '0');
-    if (elements.ammoMax) elements.ammoMax.textContent = String(profile.magazine).padStart(2, '0');
-    if (elements.weaponName) elements.weaponName.textContent = profile.label;
-    if (elements.weaponSubtitle) elements.weaponSubtitle.textContent = `${profile.subtitle} · ${profile.role}`;
-    if (elements.weaponDeck) elements.weaponDeck.dataset.weapon = profile.id;
+    writeText(elements.ammo, String(state.ammo).padStart(2, '0'));
+    writeText(elements.ammoMax, String(profile.magazine).padStart(2, '0'));
+    writeText(elements.weaponName, profile.label);
+    writeText(elements.weaponSubtitle, `${profile.subtitle} · ${profile.role}`);
+    if (elements.weaponDeck && elements.weaponDeck.dataset.weapon !== profile.id) elements.weaponDeck.dataset.weapon = profile.id;
     const bulletNodes = [...(elements.bullets?.children || [])];
     bulletNodes.forEach((bullet, index) => {
-      bullet.hidden = index >= profile.magazine;
+      if (bullet.hidden !== (index >= profile.magazine)) bullet.hidden = index >= profile.magazine;
       bullet.classList.toggle('spent', index >= state.ammo);
     });
-    elements.reload.disabled = state.weapon.reloading || state.ammo >= profile.magazine;
+    writeDisabled(elements.reload, state.weapon.reloading || state.ammo >= profile.magazine);
     elements.reload.classList.toggle('reloading', state.weapon.reloading);
-    elements.fire.disabled = state.weapon.reloading;
+    writeDisabled(elements.fire, state.weapon.reloading);
     updateWeaponButtons(state.selectedWeapon);
-    elements.combo.textContent = String(state.combo);
-    elements.comboPanel.hidden = state.combo < 2;
-    elements.lock.textContent = renderInfo.lockedEnemyId === null ? 'SEARCHING' : 'TARGET LOCK';
+    writeText(elements.combo, state.combo);
+    if (elements.comboPanel.hidden !== (state.combo < 2)) elements.comboPanel.hidden = state.combo < 2;
+    writeText(elements.lock, renderInfo.lockedEnemyId === null ? 'SEARCHING' : 'TARGET LOCK');
     elements.lock.classList.toggle('locked', renderInfo.lockedEnemyId !== null);
     updateMode(view);
   }

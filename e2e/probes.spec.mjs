@@ -241,3 +241,38 @@ test("compact phone controls keep44px targets and permit browser zoom", async ({
     await page.evaluate(() => document.documentElement.scrollWidth),
   ).toBeLessThanOrEqual(320);
 });
+
+test("stable HUD values avoid repeated DOM writes while simulation keeps running", async ({
+  page,
+}) => {
+  await train(page);
+  const result = await page.evaluate(async () => {
+    let writes = 0;
+    const observer = new MutationObserver((records) => {
+      writes += records.length;
+    });
+    for (const id of [
+      "scoreValue",
+      "ammoValue",
+      "ammoMaxValue",
+      "weaponName",
+      "weaponSubtitle",
+    ])
+      observer.observe(document.getElementById(id), {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      });
+    for (const button of document.querySelectorAll(".hud-weapon-chip"))
+      observer.observe(button, {
+        attributes: true,
+        attributeFilter: ["aria-pressed", "disabled"],
+      });
+    const before = window.__DEADZONE__.getState().elapsed;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    observer.disconnect();
+    return { writes, elapsed: window.__DEADZONE__.getState().elapsed - before };
+  });
+  expect(result.elapsed).toBeGreaterThan(0.15);
+  expect(result.writes).toBe(0);
+});

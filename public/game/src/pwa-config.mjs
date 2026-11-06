@@ -1,5 +1,5 @@
 export const CACHE_PREFIX = 'deadzone-swarm-';
-export const CACHE_NAME = 'deadzone-swarm-v3-3d4d0b8ae23c4442';
+export const CACHE_NAME = 'deadzone-swarm-v3-a2f5d7110f01b75c';
 
 export const APP_SHELL = Object.freeze([
   '/game/index.html',

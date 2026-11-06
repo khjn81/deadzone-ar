@@ -1206,5 +1206,62 @@
         "result": "WebKit artifact locator stabilization timed out before the journey; page-clipped snapshot correction keeps all functional assertions and deadlines"
       }
     }
+  },
+  {
+    "round": 23,
+    "observation": "SwiftShader CI measures28.46ms average and31.2ms p95 withMSAAoff. A real MutationObserver probe records210redundant stable-HUDwrites in300ms while the mission advances.",
+    "hypothesis": "Skipping unchanged HUD snapshots and idempotent DOM writes reduces main-thread layout/paint work while preserving rendering resolution, source assets and live simulation.",
+    "change": "Cache HUD state signatures; change text/attributes/disabled flags only when their values change; retain all rendering workloads and25/50ms budgets.",
+    "ratings": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "score": 80,
+    "sourceHash": "9a6c7f9c6e28e7eb8b8df0225ef72f8473f5693a75e5ee5ea10efc8ede079aa5",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 5770
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 39
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 21596,
+        "stats": {
+          "startTime": "2026-11-06T05:21:59.660Z",
+          "duration": 21211.569,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "probe": {
+        "exit": 0,
+        "durationMs": 248013
+      }
+    },
+    "decision": "keep"
   }
 ]

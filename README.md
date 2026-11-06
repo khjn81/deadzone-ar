@@ -38,12 +38,12 @@ npm run dev
 
 ## 검증과 개선 기록
 
-공개 준비 과정에서22회의 가설·변경·평가 루프를 수행했습니다. 설치·테스트 설정은 회차에 포함하지 않습니다. [루브릭](quality/rubric.json), [채택한 개선 목록](docs/improvements.md), [실험별 평가](quality/experiments.json), [검증 범위](docs/verification.md)를 함께 공개합니다. 점수는 구현 에이전트의 판단이며 독립적인 사용자 평가를 뜻하지 않습니다.
+공개 준비 과정에서23회의 가설·변경·평가 루프를 수행했습니다. 설치·테스트 설정은 회차에 포함하지 않습니다. [루브릭](quality/rubric.json), [채택한 개선 목록](docs/improvements.md), [실험별 평가](quality/experiments.json), [검증 범위](docs/verification.md)를 함께 공개합니다. 점수는 구현 에이전트의 판단이며 독립적인 사용자 평가를 뜻하지 않습니다.
 
 ```sh
 npx playwright install chromium webkit
 npm test                         # 자산 재생성/해시, 캐시 버전, 전체 빌드와263개 검사
-npm run test:e2e                  # desktop/mobile 핵심·복구21개씩
+npm run test:e2e                  # desktop/mobile 핵심·복구22개씩
 npm run test:release              # 실제 배포 빌드, Chromium·터치·WebKit, 오프라인·WebGL 손실
 npm run test:graphics             # 실제 GLB/PBR/쉐이더·자원 상한·성능 검사
 npm run verify:clean              # 의존성 없는 소스 복사본에서 새 설치·전체 검사
