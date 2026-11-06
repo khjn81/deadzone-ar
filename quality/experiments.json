@@ -157,5 +157,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 4,
+    "observation": "A browser audio resume promise that never settles blocks training forever; new probe fails.",
+    "hypothesis": "Optional sound activation must not gate camera consent or a silent mission.",
+    "change": "Start audio from the user gesture without waiting for its optional asynchronous completion.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 41,
+    "sourceHash": "ee0fee2b79f442fe468b0bddfbe3c1e4ed11019db0820f9ef900f9fbb74fd413",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10000
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 37
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 10226,
+        "stats": {
+          "startTime": "2026-11-06T03:58:51.596Z",
+          "duration": 9841.118,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

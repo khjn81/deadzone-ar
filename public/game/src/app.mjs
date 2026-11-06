@@ -596,6 +596,10 @@ export function createApp(documentObject, globalObject = globalThis, {
     scheduleCountdown(tick, 620);
   }
 
+  function unlockAudio() {
+    try { Promise.resolve(audioController.unlock()).catch(() => {}); } catch {}
+  }
+
   async function startWithPermissions() {
     if (destroyed || elements.start.disabled) return;
     const generation = ++launchGeneration;
@@ -603,10 +607,8 @@ export function createApp(documentObject, globalObject = globalThis, {
     audioController.syncThreatBuzz?.([], 0);
     const label = elements.start.querySelector?.('b');
     if (label) label.textContent = '장비 연결 중';
-    const [, access] = await Promise.all([
-      audioController.unlock(),
-      arController.requestAccess(elements.video)
-    ]);
+    unlockAudio();
+    const access = await arController.requestAccess(elements.video);
     if (destroyed || generation !== launchGeneration || access.cancelled) return;
     elements.app.dataset.camera = String(access.camera);
     showToast(permissionMessage(access));
@@ -622,7 +624,7 @@ export function createApp(documentObject, globalObject = globalThis, {
     elements.start.disabled = false;
     const label = elements.start.querySelector?.('b');
     if (label) label.textContent = '작전 시작';
-    await audioController.unlock();
+    unlockAudio();
     if (destroyed || generation !== launchGeneration) return;
     elements.app.dataset.camera = 'false';
     showToast('터치 훈련 모드: 드래그로 조준하고 탭으로 사격하세요');
@@ -696,10 +698,8 @@ export function createApp(documentObject, globalObject = globalThis, {
     const generation = ++launchGeneration;
     elements.retryAccess.disabled = true;
     try {
-      const [, access] = await Promise.all([
-        audioController.unlock(),
-        arController.requestAccess(elements.video)
-      ]);
+      unlockAudio();
+      const access = await arController.requestAccess(elements.video);
       if (destroyed || generation !== launchGeneration || access.cancelled) return;
       elements.app.dataset.camera = String(access.camera);
       renderer.resize(arController.getView());
