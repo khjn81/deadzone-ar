@@ -1690,3 +1690,17 @@ button:focus-visible {
 
   .game-app.screen-hit { animation: none; }
 }
+
+/* Keep primary touch controls reachable at compact phone sizes. */
+.weapon-choice,
+.hud-weapon-chip {
+  min-width: 44px;
+  min-height: 44px;
+}
+.hud-icon-button { min-width: 44px; min-height: 44px; }
+.weapon-choice b,
+.hud-weapon-chip b { font-size: 9px; }
+.weapon-choice small,
+.hud-weapon-chip small { font-size: 9px; }
+.aim-mode-option span { font-size: 11px; }
+.aim-mode-option small { font-size: 10px; }

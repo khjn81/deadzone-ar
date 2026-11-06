@@ -846,5 +846,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 17,
+    "observation": "Compact styles reduce weapon controls to29-36px and the viewport explicitly disables browser zoom; the new compact-phone probe fails.",
+    "hypothesis": "44px controls, legible labels and browser zoom improve reliable touch selection without horizontal overflow.",
+    "change": "Raise compact weapon/pause target minimums, increase weapon text and remove the zoom prohibition.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 68,
+    "sourceHash": "854aeda40fc4dde4cfd050c81cac14be9bc458f231df6ca7e96738f729c5b97b",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10340
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 38
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 25792,
+        "stats": {
+          "startTime": "2026-11-06T04:14:43.026Z",
+          "duration": 25413.404,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]
