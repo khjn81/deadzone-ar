@@ -22,10 +22,31 @@ jobs:
           node-version: '22.22.2'
           cache: npm
       - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Use Ubuntu archive for browser dependencies
+        if: matrix.suite == 'production'
+        timeout-minutes: 1
+        run: |
+          sudo python3 - <<'PYTHON'
+          from pathlib import Path
+          sources = [Path('/etc/apt/apt-mirrors.txt'), Path('/etc/apt/sources.list')]
+          sources += list(Path('/etc/apt/sources.list.d').glob('*'))
+          for source in sources:
+              if source.is_file():
+                  before = source.read_text()
+                  after = before.replace('http://azure.archive.ubuntu.com', 'https://archive.ubuntu.com')
+                  after = after.replace('https://azure.archive.ubuntu.com', 'https://archive.ubuntu.com')
+                  if after != before:
+                      source.write_text(after)
+                      print(f'Using Ubuntu archive in {source}')
+          Path('/etc/apt/apt.conf.d/99-browser-timeouts').write_text(
+              'Acquire::http::Timeout "30";\nAcquire::https::Timeout "30";\nAcquire::Retries "1";\n'
+          )
+          PYTHON
       - run: npx playwright install --with-deps chromium
         if: matrix.suite != 'production'
       - run: npx playwright install --with-deps chromium webkit
         if: matrix.suite == 'production'
+        timeout-minutes: 5
       - run: npm test
       - if: matrix.suite != 'production'
         run: npx playwright test --project=${{ matrix.suite }} --reporter=list,json
