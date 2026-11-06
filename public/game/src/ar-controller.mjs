@@ -307,6 +307,11 @@ export class ARController {
     return this.manualTurnInput;
   }
 
+  stopTurn() {
+    this.manualTurnInput = 0;
+    this.manualTurnRate = 0;
+  }
+
   nudgeTurn(direction, degrees = 7) {
     let numericDirection = 0;
     try {

@@ -740,5 +740,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 15,
+    "observation": "Window blur leaves an armed turn active, and a short landscape viewport runs the mission behind its blocking warning; both new probes fail.",
+    "hypothesis": "Pausing attention/viewport transitions and clearing held gestures prevents unintended resumed motion.",
+    "change": "Cancel owned pointer gestures and turn velocity when leaving play; pause on blur or blocked landscape and require explicit valid-viewport resume.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 66,
+    "sourceHash": "f224b7c2fe91428153dbe58da2ddb783428b21e5e4f205746189f03e0be28348",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10218
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 38
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 14696,
+        "stats": {
+          "startTime": "2026-11-06T04:12:25.627Z",
+          "duration": 14318.646,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

@@ -314,6 +314,7 @@ export function createApp(documentObject, globalObject = globalThis, {
     || ((callback) => setTimer(() => callback(Date.now()), 16));
   const cancelFrame = globalObject?.cancelAnimationFrame?.bind(globalObject) || clearTimer;
   const listeners = [];
+  const turnCancels = [];
   const countdownTimers = new Set();
   let feedbackTimer = null;
   let toastTimer = null;
@@ -353,6 +354,7 @@ export function createApp(documentObject, globalObject = globalThis, {
     elements.gameHud.inert = name !== 'game';
     arController.setTouchEnabled(name === 'game');
     arController.setSensorPaused(name === 'pause');
+    if (name !== 'game') resetTurnControls();
     if (name === 'pause') elements.resume.focus?.({ preventScroll: true });
     if (name === 'game') elements.pauseButton.focus?.({ preventScroll: true });
     if (name === 'result') elements.replay.focus?.({ preventScroll: true });
@@ -582,7 +584,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   function beginMission() {
-    if (destroyed || documentObject.hidden) { cancelPreparation(); return; }
+    if (destroyed || documentObject.hidden || isBlockedViewport()) { cancelPreparation(); return; }
     missionNumber += 1;
     const seed = options.seed === null ? (Date.now() + missionNumber) >>> 0 : options.seed;
     renderer.resetMission?.();
@@ -600,7 +602,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   function startCalibration() {
-    if (destroyed || documentObject.hidden) { cancelPreparation(); return; }
+    if (destroyed || documentObject.hidden || isBlockedViewport()) { cancelPreparation(); return; }
     audioController.syncThreatBuzz?.([], 0);
     clearCountdown();
     setScreen('calibration');
@@ -689,7 +691,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   function resumeMission() {
-    if (destroyed || documentObject.hidden || state.phase !== PHASES.PAUSED) return false;
+    if (destroyed || documentObject.hidden || isBlockedViewport() || state.phase !== PHASES.PAUSED) return false;
     state = togglePause(state);
     lastFrameTime = 0;
     setScreen('game');
@@ -780,6 +782,7 @@ export function createApp(documentObject, globalObject = globalThis, {
         arController.nudgeTurn(direction, TURN_TAP_DEGREES);
       }
     };
+    turnCancels.push(() => release({ pointerId: activePointer }));
     listen(button, 'click', (event) => {
       if (event.detail === 0 && state.phase === PHASES.PLAYING) {
         arController.nudgeTurn(direction, TURN_TAP_DEGREES);
@@ -790,6 +793,25 @@ export function createApp(documentObject, globalObject = globalThis, {
     listen(button, 'pointercancel', release, { passive: true });
     listen(button, 'pointerleave', release, { passive: true });
     listen(button, 'lostpointercapture', release, { passive: true });
+  }
+
+  function resetTurnControls() {
+    for (const cancel of turnCancels) cancel();
+    activeTurnOwner = null;
+    arController.stopTurn();
+  }
+
+  function isBlockedViewport() {
+    const width = finiteNumber(globalObject?.innerWidth), height = finiteNumber(globalObject?.innerHeight);
+    return height > 0 && height <= 540 && width > height;
+  }
+
+  function onViewportChange() {
+    if (isBlockedViewport()) {
+      if (elements.app.dataset.phase === 'calibration') cancelPreparation();
+      pauseMission('세로 화면에서 전투 계속을 눌러주세요');
+    }
+    redrawInactive();
   }
 
   function cancelPreparation() {
@@ -996,7 +1018,11 @@ export function createApp(documentObject, globalObject = globalThis, {
   listen(elements.sound, 'click', toggleSound);
   listen(documentObject, 'keydown', onKeyDown);
   listen(documentObject, 'visibilitychange', onVisibilityChange);
-  listen(globalObject, 'resize', redrawInactive, { passive: true });
+  listen(globalObject, 'blur', () => {
+    if (elements.app.dataset.phase === 'calibration') cancelPreparation();
+    pauseMission('다시 준비되면 전투 계속을 눌러주세요');
+  });
+  listen(globalObject, 'resize', onViewportChange, { passive: true });
   listen(globalObject, 'orientationchange', onOrientationChange, { passive: true });
   listen(globalObject, 'pagehide', (event) => {
     if (!event.persisted) { destroy(); return; }
