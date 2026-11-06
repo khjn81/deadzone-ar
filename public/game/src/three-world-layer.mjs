@@ -68,7 +68,7 @@ export async function createThreeWorldLayer(canvas, options = {}) {
     effects.render(propertyOf(frame, 'effects', EMPTY_FRAME), viewport);
     shaderFailure = null; renderer.render(scene, camera); if (shaderFailure || contextLost) return false; renderCount += 1; return true;
   }
-  function getDiagnostics() { return { ...insects.getDiagnostics(), ...effects.getDiagnostics(), programCount: Array.isArray(renderer?.info?.programs) ? renderer.info.programs.length : 0, shaderErrorCount, renderCount, modelReady: !destroyed && Boolean(insects), destroyed, contextLost }; }
+  function getDiagnostics() { return { ...insects.getDiagnostics(), ...effects.getDiagnostics(), programCount: Array.isArray(renderer?.info?.programs) ? renderer.info.programs.length : 0, shaderErrorCount, renderCount, ...(options.exposeDiagnostics === true ? { drawCalls: num(renderer?.info?.render?.calls, 0), triangles: num(renderer?.info?.render?.triangles, 0) } : {}), modelReady: !destroyed && Boolean(insects), destroyed, contextLost }; }
   function resetMission() { if (!destroyed) effects.resetMission(); }
   function destroy() { if (destroyed) return; destroyed = true; cleanup(); }
   return { resize, render, resetMission, getDiagnostics, destroy };

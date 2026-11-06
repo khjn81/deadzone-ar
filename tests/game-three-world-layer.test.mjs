@@ -114,6 +114,7 @@ function countedRuntime(THREE, counters, WebGLRenderer) {
     WebGLRenderer,
     Group: counted(THREE.Group, 'groups'),
     Mesh: counted(THREE.Mesh, 'meshes'),
+    InstancedMesh: counted(THREE.InstancedMesh, 'meshes'),
     BufferGeometry: counted(THREE.BufferGeometry, 'geometries'),
     PlaneGeometry: counted(THREE.PlaneGeometry, 'geometries'),
     CylinderGeometry: counted(THREE.CylinderGeometry, 'geometries'),
@@ -296,6 +297,17 @@ async function createWorldLayerFixture(options = {}) {
       return result;
     }
   };
+  if (options.instancedErrorAt) {
+    const Base = THREE.InstancedMesh;
+    let attempts = 0;
+    THREE.InstancedMesh = class extends Base {
+      constructor(...args) {
+        attempts += 1;
+        if (attempts === options.instancedErrorAt) throw options.instancedError;
+        super(...args);
+      }
+    };
+  }
   if (options.meshErrorAt) {
     const Mesh = THREE.Mesh;
     let meshCreations = 0;
@@ -721,9 +733,13 @@ test('allocates fixed reusable combat pools and applies CSS-pixel projection dat
   const casings = sceneObjects(scene, (node) => node.userData.effectPool === 'casing');
   const impacts = sceneObjects(scene, (node) => node.userData.effectPool === 'impact');
   const fragments = sceneObjects(scene, (node) => node.userData.effectPool === 'fragment');
-  assert.equal(casings.length, 20);
+  assert.equal(casings.length, 1);
+  assert.equal(casings[0].isInstancedMesh, true);
+  assert.equal(casings[0].instanceMatrix.count, 20);
   assert.equal(impacts.length, 8);
-  assert.equal(fragments.length, 36);
+  assert.equal(fragments.length, 1);
+  assert.equal(fragments[0].isInstancedMesh, true);
+  assert.equal(fragments[0].instanceMatrix.count, 36);
   assert.ok([...casings, ...impacts, ...fragments].every((mesh) => mesh.visible === false));
 
   const poolIdentities = [...casings, ...impacts, ...fragments];
@@ -738,8 +754,14 @@ test('allocates fixed reusable combat pools and applies CSS-pixel projection dat
       fluids: []
     }
   }, 0);
-  assert.deepEqual(casings[0].position.toArray().slice(0, 2), [100, 200]);
-  assert.deepEqual(fragments[0].position.toArray().slice(0, 2), [-160, -320]);
+  const casingMatrix = casings[0].matrix.clone();
+  const fragmentMatrix = fragments[0].matrix.clone();
+  casings[0].getMatrixAt(0, casingMatrix);
+  fragments[0].getMatrixAt(0, fragmentMatrix);
+  assert.deepEqual(casingMatrix.elements.slice(12, 14), [100, 200]);
+  assert.deepEqual(fragmentMatrix.elements.slice(12, 14), [-160, -320]);
+  assert.equal(casings[0].count, 1);
+  assert.equal(fragments[0].count, 1);
   assert.equal(impacts[0].visible, false);
 
   layer.render({
@@ -1002,8 +1024,8 @@ test('an abort signal releases renderer ownership immediately and source ownersh
 test('rolls back loaded source and partial fixed pools when an effect mesh constructor throws', async () => {
   const expectedFailure = new Error('fixture effect pool failure');
   const fixture = await createWorldLayerFixture({
-    meshErrorAt: 22,
-    meshError: expectedFailure,
+    instancedErrorAt: 2,
+    instancedError: expectedFailure,
     returnCreation: true
   });
   await assert.rejects(fixture.creation, expectedFailure);

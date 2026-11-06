@@ -38,7 +38,7 @@ npm run dev
 
 ## 검증과 개선 기록
 
-공개 준비 과정에서25회의 가설·변경·평가 루프를 수행했습니다. 설치·테스트 설정은 회차에 포함하지 않습니다. [루브릭](quality/rubric.json), [채택한 개선 목록](docs/improvements.md), [실험별 평가](quality/experiments.json), [검증 범위](docs/verification.md)를 함께 공개합니다. 점수는 구현 에이전트의 판단이며 독립적인 사용자 평가를 뜻하지 않습니다.
+공개 준비 과정에서26회의 가설·변경·평가 루프를 수행했습니다. 설치·테스트 설정은 회차에 포함하지 않습니다. [루브릭](quality/rubric.json), [채택한 개선 목록](docs/improvements.md), [실험별 평가](quality/experiments.json), [검증 범위](docs/verification.md)를 함께 공개합니다. 점수는 구현 에이전트의 판단이며 독립적인 사용자 평가를 뜻하지 않습니다.
 
 ```sh
 npx playwright install chromium webkit

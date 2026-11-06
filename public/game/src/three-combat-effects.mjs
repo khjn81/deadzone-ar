@@ -60,31 +60,42 @@ export function createThreeCombatEffects(scene, THREE) {
   let impactFlashMaterial = null;
   let impactAlphaTexture = null;
   let fragmentMaterial = null;
-  const casings = [];
+  let casingBatch = null;
+  let fragmentBatch = null;
+  const transform = new THREE.Object3D();
   const impacts = [];
   const impactMaterials = [];
   const impactFlashMaterials = [];
-  const fragments = [];
+
   const counts = { casingCount: 0, impactCount: 0, fragmentCount: 0 };
   let destroyed = false;
 
-  function makePool(size, geometry, material, kind, target) {
-    for (let index = 0; index < size; index += 1) {
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.visible = false;
-      mesh.userData.effectPool = kind;
-      target.push(mesh);
-      scene.add(mesh);
-    }
+  function makeBatch(size, geometry, material, kind) {
+    const mesh = new THREE.InstancedMesh(geometry, material, size);
+    mesh.count = 0;
+    mesh.visible = false;
+    mesh.frustumCulled = false;
+    mesh.userData.effectPool = kind;
+    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    return mesh;
+  }
+
+  function finishBatch(mesh, count) {
+    mesh.count = count;
+    mesh.visible = count > 0;
+    if (count > 0) mesh.instanceMatrix.needsUpdate = true;
+    return count;
   }
 
   function rollback() {
-    for (const mesh of casings) safeRemove(scene, mesh);
+    if (casingBatch) safeRemove(scene, casingBatch);
+    if (fragmentBatch) safeRemove(scene, fragmentBatch);
+    safeDispose(casingBatch);
+    safeDispose(fragmentBatch);
+    casingBatch = null;
+    fragmentBatch = null;
     for (const mesh of impacts) safeRemove(scene, mesh);
-    for (const mesh of fragments) safeRemove(scene, mesh);
-    casings.length = 0;
     impacts.length = 0;
-    fragments.length = 0;
     safeDispose(casingGeometry);
     safeDispose(impactGeometry);
     safeDispose(fragmentGeometry);
@@ -121,7 +132,8 @@ export function createThreeCombatEffects(scene, THREE) {
       depthWrite: false
     });
     fragmentMaterial = new THREE.MeshStandardMaterial({ color: 0x788522, roughness: 0.9, metalness: 0 });
-    makePool(CASING_POOL_SIZE, casingGeometry, casingMaterial, 'casing', casings);
+    casingBatch = makeBatch(CASING_POOL_SIZE, casingGeometry, casingMaterial, 'casing');
+    scene.add(casingBatch);
     for (let index = 0; index < IMPACT_POOL_SIZE; index += 1) {
       const slotMaterial = impactMaterial.clone();
       impactMaterials.push(slotMaterial);
@@ -141,7 +153,8 @@ export function createThreeCombatEffects(scene, THREE) {
       impacts.push(mesh);
       scene.add(mesh);
     }
-    makePool(FRAGMENT_POOL_SIZE, fragmentGeometry, fragmentMaterial, 'fragment', fragments);
+    fragmentBatch = makeBatch(FRAGMENT_POOL_SIZE, fragmentGeometry, fragmentMaterial, 'fragment');
+    scene.add(fragmentBatch);
   } catch (error) {
     rollback();
     throw error;
@@ -161,20 +174,18 @@ export function createThreeCombatEffects(scene, THREE) {
 
   function renderCasings(items, viewport) {
     let count = 0;
-    for (let index = 0; index < casings.length; index += 1) {
-      const mesh = casings[index];
+    for (let index = 0; index < CASING_POOL_SIZE; index += 1) {
       const descriptor = itemAt(items, index);
-      const visible = Boolean(descriptor)
-        && propertyOf(descriptor, 'visible', true) !== false
-        && normalized(mesh, descriptor, viewport);
-      mesh.visible = visible;
-      if (!visible) continue;
-      mesh.position.z = 80;
-      mesh.rotation.z = number(propertyOf(descriptor, 'rotation', 0));
-      mesh.scale.set(3, 7, 3);
+      if (!descriptor || propertyOf(descriptor, 'visible', true) === false
+        || !normalized(transform, descriptor, viewport)) continue;
+      transform.position.z = 80;
+      transform.rotation.z = number(propertyOf(descriptor, 'rotation', 0));
+      transform.scale.set(3, 7, 3);
+      transform.updateMatrix();
+      casingBatch.setMatrixAt(count, transform.matrix);
       count += 1;
     }
-    return count;
+    return finishBatch(casingBatch, count);
   }
 
   function renderImpacts(items, viewport) {
@@ -222,22 +233,20 @@ export function createThreeCombatEffects(scene, THREE) {
     try { chipCount = Array.isArray(fragmentItems) ? fragmentItems.length : 0; } catch {}
     chipCount = Math.max(0, Math.min(FRAGMENT_POOL_SIZE, number(chipCount, 0)));
     let count = 0;
-    for (let index = 0; index < fragments.length; index += 1) {
-      const mesh = fragments[index];
+    for (let index = 0; index < FRAGMENT_POOL_SIZE; index += 1) {
       const descriptor = index < chipCount
         ? itemAt(fragmentItems, index)
         : itemAt(fluidItems, index - chipCount);
-      const visible = Boolean(descriptor)
-        && propertyOf(descriptor, 'visible', true) !== false
-        && normalized(mesh, descriptor, viewport);
-      mesh.visible = visible;
-      if (!visible) continue;
-      mesh.position.z = 85;
-      mesh.rotation.z = number(propertyOf(descriptor, 'rotation', 0));
-      mesh.scale.set(4, 2, 1);
+      if (!descriptor || propertyOf(descriptor, 'visible', true) === false
+        || !normalized(transform, descriptor, viewport)) continue;
+      transform.position.z = 85;
+      transform.rotation.z = number(propertyOf(descriptor, 'rotation', 0));
+      transform.scale.set(4, 2, 1);
+      transform.updateMatrix();
+      fragmentBatch.setMatrixAt(count, transform.matrix);
       count += 1;
     }
-    return count;
+    return finishBatch(fragmentBatch, count);
   }
 
   function render(effects = {}, viewport) {
@@ -261,7 +270,9 @@ export function createThreeCombatEffects(scene, THREE) {
 
   function resetMission() {
     if (destroyed) return;
-    for (const mesh of [...casings, ...impacts, ...fragments]) {
+    finishBatch(casingBatch, 0);
+    finishBatch(fragmentBatch, 0);
+    for (const mesh of impacts) {
       mesh.visible = false;
       if (mesh.userData.effectPool === 'impact') mesh.material.opacity = 0;
       for (const child of mesh.children) {

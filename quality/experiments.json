@@ -1377,5 +1377,62 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 26,
+    "observation": "Full-fresh max-scene SwiftShaderCIstill exceeds25ms:29.54mobile/40.63desktop.20identical casings and36identical fragments each submit separate opaque draw calls despite shared geometry/material.",
+    "hypothesis": "Instancing these two fixed pools reduces submission and state-change overhead while rendering every original object with the same geometry, material, transform and resolution.",
+    "change": "Replace56separate casing/fragment meshes with two fixed-capacity InstancedMesh batches; compact visible matrices, reset counts, dispose owned instance buffers, and preserve independent impact materials. Update existing ownership/transform tests for exact20/36instance capacities and expose diagnostic draw/triangle counts.",
+    "ratings": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "score": 80,
+    "sourceHash": "6c48c8c8a131a41c7fbd578e74554d5c6d433f1465f2752dec79ae9bf706ebb1",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 6359
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 39
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 20204,
+        "stats": {
+          "startTime": "2026-11-06T06:17:11.046Z",
+          "duration": 19692.835000000003,
+          "expected": 3,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "probe": {
+        "exit": 0,
+        "durationMs": 257068
+      }
+    },
+    "decision": "keep"
   }
 ]

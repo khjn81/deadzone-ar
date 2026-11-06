@@ -43,6 +43,17 @@ function instrumentedRuntime({ throwMaterialCloneAt = 0, throwMeshAt = 0 } = {})
     }
   }
 
+  class InstancedMesh extends bundledThree.InstancedMesh {
+    constructor(...args) {
+      meshAttempts += 1;
+      if (meshAttempts === throwMeshAt) throw new Error('fixture pooled mesh failure');
+      super(...args);
+      this.disposeCalls = 0;
+      created.meshes.push(this);
+    }
+    dispose(...args) { this.disposeCalls += 1; return super.dispose(...args); }
+  }
+
   return {
     created,
     runtime: {
@@ -51,6 +62,7 @@ function instrumentedRuntime({ throwMaterialCloneAt = 0, throwMeshAt = 0 } = {})
       CylinderGeometry: resource(bundledThree.CylinderGeometry, 'geometries'),
       DataTexture: resource(bundledThree.DataTexture, 'textures'),
       Mesh,
+      InstancedMesh,
       MeshBasicMaterial: resource(bundledThree.MeshBasicMaterial, 'materials'),
       MeshStandardMaterial: resource(bundledThree.MeshStandardMaterial, 'materials'),
       PlaneGeometry: resource(bundledThree.PlaneGeometry, 'geometries')
@@ -89,7 +101,7 @@ test('impact slots own independent render-state materials without frame or reset
   assert.equal(new Set([...impacts, ...flashes].map(({ material }) => material.alphaMap)).size, 1);
   assert.deepEqual(
     { geometries: created.geometries.length, materials: created.materials.length, meshes: created.meshes.length, textures: created.textures.length },
-    { geometries: 3, materials: 20, meshes: 72, textures: 1 }
+    { geometries: 3, materials: 20, meshes: 18, textures: 1 }
   );
 
   const allocations = {
@@ -119,11 +131,12 @@ test('impact slots own independent render-state materials without frame or reset
   effects.destroy();
   assert.ok([...created.geometries, ...created.materials, ...created.textures]
     .every(({ disposeCalls }) => disposeCalls === 1));
+  assert.ok(created.meshes.filter(mesh => mesh.isInstancedMesh).every(mesh => mesh.disposeCalls === 1));
   assert.equal(scene.children.length, 0);
 });
 
 test('partial impact construction disposes base and created slot resources exactly once', () => {
-  const { created, runtime } = instrumentedRuntime({ throwMeshAt: 22 });
+  const { created, runtime } = instrumentedRuntime({ throwMeshAt: 3 });
   const scene = new bundledThree.Scene();
 
   assert.throws(
@@ -136,6 +149,7 @@ test('partial impact construction disposes base and created slot resources exact
   );
   assert.ok([...created.geometries, ...created.materials, ...created.textures]
     .every(({ disposeCalls }) => disposeCalls === 1));
+  assert.ok(created.meshes.filter(mesh => mesh.isInstancedMesh).every(mesh => mesh.disposeCalls === 1));
   assert.equal(scene.children.length, 0);
 });
 
@@ -153,5 +167,6 @@ test('a failure between paired slot clones rolls back the first clone', () => {
   );
   assert.ok([...created.geometries, ...created.materials, ...created.textures]
     .every(({ disposeCalls }) => disposeCalls === 1));
+  assert.ok(created.meshes.filter(mesh => mesh.isInstancedMesh).every(mesh => mesh.disposeCalls === 1));
   assert.equal(scene.children.length, 0);
 });
