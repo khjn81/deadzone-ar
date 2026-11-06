@@ -1,0 +1,55 @@
+[
+  {
+    "round": 1,
+    "observation": "Denied Storage.getItem throws during first visit and prevents initialization.",
+    "hypothesis": "Guarding best-score reads keeps the entire mission available under denied storage.",
+    "change": "Catch blocked reads and normalize finite nonnegative scores.",
+    "ratings": [
+      3,
+      4,
+      1,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 36,
+    "sourceHash": "688d996ad40c3df2b72fcdfe42eff8c03d14b6452b7092cb9a005719f12bbc8a",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10787
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 38
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 3245,
+        "stats": {
+          "startTime": "2026-11-06T03:56:36.656Z",
+          "duration": 2754.332,
+          "expected": 1,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
+  }
+]

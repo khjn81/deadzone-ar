@@ -494,8 +494,12 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   function readBestScore() {
-    const stored = finiteNumber(storage?.getItem?.(BEST_SCORE_KEY));
-    return Math.max(0, Math.round(stored));
+    try {
+      const stored = finiteNumber(storage?.getItem?.(BEST_SCORE_KEY));
+      return Math.max(0, Math.round(stored));
+    } catch {
+      return 0;
+    }
   }
 
   function writeBestScore(value) {
