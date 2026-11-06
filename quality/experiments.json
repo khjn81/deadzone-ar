@@ -369,5 +369,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 8,
+    "observation": "Native Enter or Space activation on turn buttons never rotates the view; the fixed browser probe fails.",
+    "hypothesis": "A native zero-detail click path enables keyboard and assistive activation without doubling pointer turns.",
+    "change": "Handle native button clicks with the same7degree turn and require a live mission.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      3,
+      4,
+      2,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 50,
+    "sourceHash": "9118697ab9c36b8eccaf56995e10bcde9c7dd64064d61dc39f07d4a6e81010a1",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 10226
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 37
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 10513,
+        "stats": {
+          "startTime": "2026-11-06T04:01:57.495Z",
+          "duration": 10130.617999999999,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

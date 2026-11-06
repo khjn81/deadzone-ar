@@ -758,6 +758,11 @@ export function createApp(documentObject, globalObject = globalThis, {
         arController.nudgeTurn(direction, TURN_TAP_DEGREES);
       }
     };
+    listen(button, 'click', (event) => {
+      if (event.detail === 0 && state.phase === PHASES.PLAYING) {
+        arController.nudgeTurn(direction, TURN_TAP_DEGREES);
+      }
+    });
     listen(button, 'pointerdown', press, { passive: false });
     listen(button, 'pointerup', (event) => release(event, true), { passive: true });
     listen(button, 'pointercancel', release, { passive: true });
