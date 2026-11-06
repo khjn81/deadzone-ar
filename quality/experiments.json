@@ -263,5 +263,58 @@
       }
     },
     "decision": "keep"
+  },
+  {
+    "round": 6,
+    "observation": "The fixed baseline starts a mission in a hidden tab when calibration timers complete.",
+    "hypothesis": "Cancelling preparation and guarding countdown entry points prevents background starts.",
+    "change": "Invalidate pending launches, clear calibration timers and return to intro when preparation becomes hidden.",
+    "ratings": [
+      3,
+      4,
+      4,
+      4,
+      4,
+      3,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      0,
+      3,
+      1
+    ],
+    "score": 46,
+    "sourceHash": "73292f35e1a84c7b125f57147710d6ee09097379843281ac4276ba19cda5eda4",
+    "measurements": {
+      "unit": {
+        "exit": 0,
+        "durationMs": 9956
+      },
+      "syntax": {
+        "exit": 0,
+        "durationMs": 36
+      },
+      "e2e": {
+        "exit": 0,
+        "durationMs": 10649,
+        "stats": {
+          "startTime": "2026-11-06T04:00:12.255Z",
+          "duration": 10269.948,
+          "expected": 2,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      }
+    },
+    "decision": "keep"
   }
 ]

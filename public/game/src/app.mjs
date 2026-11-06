@@ -564,6 +564,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   function beginMission() {
+    if (destroyed || documentObject.hidden) { cancelPreparation(); return; }
     missionNumber += 1;
     const seed = options.seed === null ? (Date.now() + missionNumber) >>> 0 : options.seed;
     renderer.resetMission?.();
@@ -581,6 +582,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   function startCalibration() {
+    if (destroyed || documentObject.hidden) { cancelPreparation(); return; }
     audioController.syncThreatBuzz?.([], 0);
     clearCountdown();
     setScreen('calibration');
@@ -669,7 +671,7 @@ export function createApp(documentObject, globalObject = globalThis, {
   }
 
   function resumeMission() {
-    if (state.phase !== PHASES.PAUSED) return false;
+    if (destroyed || documentObject.hidden || state.phase !== PHASES.PAUSED) return false;
     state = togglePause(state);
     lastFrameTime = 0;
     setScreen('game');
@@ -758,8 +760,21 @@ export function createApp(documentObject, globalObject = globalThis, {
     listen(button, 'lostpointercapture', release, { passive: true });
   }
 
+  function cancelPreparation() {
+    launchGeneration += 1;
+    clearCountdown();
+    arController.cancelAccess();
+    elements.app.dataset.camera = 'false';
+    elements.start.disabled = false;
+    const label = elements.start.querySelector?.('b');
+    if (label) label.textContent = '작전 시작';
+    if (elements.app.dataset.phase === 'calibration') setScreen('intro');
+  }
+
   function onVisibilityChange() {
-    if (documentObject.hidden) pauseMission('화면을 벗어나 작전을 일시정지했습니다');
+    if (!documentObject.hidden) return;
+    if (['intro', 'calibration'].includes(elements.app.dataset.phase)) cancelPreparation();
+    pauseMission('화면을 벗어나 작전을 일시정지했습니다');
   }
 
   function onOrientationChange() {
