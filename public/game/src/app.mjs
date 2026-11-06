@@ -352,6 +352,7 @@ export function createApp(documentObject, globalObject = globalThis, {
     elements.app.dataset.phase = name;
     elements.gameHud.inert = name !== 'game';
     arController.setTouchEnabled(name === 'game');
+    arController.setSensorPaused(name === 'pause');
     if (name === 'pause') elements.resume.focus?.({ preventScroll: true });
     if (name === 'game') elements.pauseButton.focus?.({ preventScroll: true });
     if (name === 'result') elements.replay.focus?.({ preventScroll: true });

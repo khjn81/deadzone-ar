@@ -104,7 +104,10 @@ export class ARController {
     this.pointerHandlers = null;
     this.pointerGesture = null;
     this.orientationAttached = false;
+    this.sensorPaused = false;
+    this.lastAcceptedSensorTimestamp = null;
     this.handleOrientation = this.handleOrientation.bind(this);
+    this.receiveOrientation = this.receiveOrientation.bind(this);
   }
 
   async requestAccess(videoElement) {
@@ -261,7 +264,7 @@ export class ARController {
       }
       if (!this.accessCurrent(generation)) return false;
       if (!this.orientationAttached) {
-        this.globalObject.addEventListener('deviceorientation', this.handleOrientation, { passive: true });
+        this.globalObject.addEventListener('deviceorientation', this.receiveOrientation, { passive: true });
         this.orientationAttached = true;
       }
       return true;
@@ -337,6 +340,28 @@ export class ARController {
       this.manualTurnRate = 0;
     }
     return this.getView();
+  }
+
+  setSensorPaused(paused) {
+    const next = Boolean(paused);
+    if (this.sensorPaused && !next) {
+      this.lastOrientationTimestamp = null;
+      this.lastAcceptedSensorTimestamp = null;
+    }
+    this.sensorPaused = next;
+  }
+
+  receiveOrientation(event) {
+    if (this.destroyed || this.sensorPaused) return;
+    const stamp = event?.timeStamp;
+    if (typeof stamp !== 'number' || !Number.isFinite(stamp) || stamp < 0) return;
+    const age = clockFor(this.globalObject) - this.lastSampleAt;
+    if (this.lastAcceptedSensorTimestamp !== null && stamp <= this.lastAcceptedSensorTimestamp
+      && age >= 0 && age <= SENSOR_STALE_AFTER) return;
+    const pose = cameraPoseFromDeviceOrientation(event?.alpha, event?.beta, event?.gamma, this.smoothedYaw);
+    if (!pose) return;
+    this.lastAcceptedSensorTimestamp = stamp;
+    this.handleOrientation(event);
   }
 
   handleOrientation(event) {
@@ -581,7 +606,7 @@ export class ARController {
     this.accessGeneration += 1;
     this.clearCameraListeners();
     if (this.orientationAttached) {
-      this.globalObject?.removeEventListener?.('deviceorientation', this.handleOrientation);
+      this.globalObject?.removeEventListener?.('deviceorientation', this.receiveOrientation);
       this.orientationAttached = false;
     }
     const stream = this.stream || this.videoElement?.srcObject;
@@ -591,6 +616,7 @@ export class ARController {
     this.cameraActive = false;
     this.sensorGranted = false;
     this.hasSample = false;
+    this.lastAcceptedSensorTimestamp = null;
     this.mode = 'touch';
   }
 
